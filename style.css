@@ -797,3 +797,9 @@ body::after {
         margin: 6px;
     }
 }
+
+.creditos {
+    margin-top: 25px;
+    font-size: 12px;
+    opacity: 0.45;
+}
