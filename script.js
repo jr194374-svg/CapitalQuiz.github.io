@@ -1251,20 +1251,13 @@ function pasarPregunta() {
 
 botonComenzar.addEventListener(
     "click",
-    function(event) {
-
-        event.preventDefault();
-
-        comenzarJuego();
-    }
+    comenzarJuego
 );
-botonComenzar.style.touchAction = "manipulation";
 
 botonResponder.addEventListener(
     "click",
     comprobarRespuesta
 );
-
 
 botonJugarDeNuevo.addEventListener(
     "click",
