@@ -115,7 +115,12 @@ const resultadoPorcentaje =
 // =====================================================
 
 function comenzarJuego() {
-    alert("El botón sí está funcionando");
+    if (!Array.isArray(paises)) {
+        alert(
+            "Error: no se pudo cargar la base de datos de países."
+        );
+        return;
+    }
     // Reiniciar estadísticas
     correctas = 0;
     incorrectas = 0;
@@ -1246,9 +1251,14 @@ function pasarPregunta() {
 
 botonComenzar.addEventListener(
     "click",
-    comenzarJuego
-);
+    function(event) {
 
+        event.preventDefault();
+
+        comenzarJuego();
+    }
+);
+botonComenzar.style.touchAction = "manipulation";
 
 botonResponder.addEventListener(
     "click",
