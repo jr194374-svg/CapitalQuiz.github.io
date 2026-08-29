@@ -28,6 +28,7 @@ body {
 
 .contenedor {
     position: relative;
+    z-index: 1;
 
     max-width: 600px;
     margin: 60px auto;
@@ -747,4 +748,10 @@ body::after {
         transform:
             scale(1);
     }
+}
+
+button {
+    position: relative;
+    z-index: 2;
+    touch-action: manipulation;
 }
