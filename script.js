@@ -1249,10 +1249,7 @@ function pasarPregunta() {
 // BOTONES
 // =====================================================
 
-botonComenzar.addEventListener(
-    "click",
-    comenzarJuego
-);
+
 
 botonResponder.addEventListener(
     "click",
