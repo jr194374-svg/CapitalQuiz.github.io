@@ -115,7 +115,7 @@ const resultadoPorcentaje =
 // =====================================================
 
 function comenzarJuego() {
-
+    alert("El botón sí está funcionando");
     // Reiniciar estadísticas
     correctas = 0;
     incorrectas = 0;
