@@ -303,7 +303,7 @@ const paises = [
 
     {
         pais: "Cuba",
-        capital: "La Habana",
+        capital: ["La habana", "Habana"],
         continente: "América",
         porcentaje: 65
     },
@@ -765,7 +765,7 @@ const paises = [
 
     {
         pais: "Antigua y Barbuda",
-        capital: "Saint John's",
+        capital:  ["Saint johns", "Saint john's"],
         continente: "América",
         porcentaje: 30
     },
