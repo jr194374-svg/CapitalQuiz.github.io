@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -48,51 +47,51 @@
     <main class="contenedor">
 
         <!-- =========================
-                MENÚ PRINCIPAL
-            ========================== -->
+             MENÚ PRINCIPAL
+        ========================== -->
 
-            <section id="menuPrincipal">
+        <section id="menuPrincipal">
 
-                <h1>🌎 GeoQuiz </h1>
+            <h1>🌎 GeoQuiz</h1>
 
-                <p>
-                    Elige un modo de juego
-                </p>
+            <p>
+                Elige un modo de juego
+            </p>
 
-                <div class="modosJuego">
+            <div class="modosJuego">
 
-                    <button
-                        id="botonCapitales"
-                        class="modoJuego"
-                    >
-                        🌎
-                        <strong>Capitales</strong>
-                        <span>Adivina la capital de cada país</span>
-                    </button>
-
-
-                    <button
-                        class="modoJuego modoBloqueado"
-                        disabled
-                    >
-                        🚩
-                        <strong>Próximamente</strong>
-                        <span>Nuevo modo de juego</span>
-                    </button>
+                <button
+                    id="botonCapitales"
+                    class="modoJuego"
+                >
+                    🌎
+                    <strong>Capitales</strong>
+                    <span>Adivina la capital de cada país</span>
+                </button>
 
 
-                    <button
-                        class="modoJuego modoBloqueado"
-                        disabled
-                    >
-                        🗺️
-                        <strong>Próximamente</strong>
-                        <span>Nuevo modo de juego</span>
-                    </button>
+                <button
+                    id="botonBanderas"
+                    class="modoJuego"
+                >
+                    🚩
+                    <strong>Banderas</strong>
+                    <span>Adivina la bandera de cada país</span>
+                </button>
 
-                </div>
 
-            </section>
+                <button
+                    class="modoJuego modoBloqueado"
+                    disabled
+                >
+                    🗺️
+                    <strong>Próximamente</strong>
+                    <span>Nuevo modo de juego</span>
+                </button>
+
+            </div>
+
+        </section>
 
 
         <!-- =========================
@@ -102,7 +101,7 @@
         <section id="pantallaInicio">
 
             <!-- =========================
-                MODO DE JUEGO
+                 MODO DE JUEGO
             ========================== -->
 
             <div class="selectorModo">
@@ -259,6 +258,7 @@
 
                 </div>
 
+
                 <div class="opcion">
 
                     <label for="selectorRespuesta">
@@ -278,6 +278,7 @@
                     </select>
 
                 </div>
+
 
                 <!-- CRONÓMETRO -->
 
@@ -337,22 +338,29 @@
                 ⏱️ 00:00
             </div>
 
+
             <!-- INFORMACIÓN DE LA PREGUNTA -->
 
             <p id="numeroPregunta"></p>
 
             <h2 id="pregunta"></h2>
 
+            <img
+                id="banderaPregunta"
+                class="banderaPregunta"
+                src=""
+                alt="Bandera del país"
+>
 
             <!-- RESPUESTA -->
 
             <input
                 type="text"
                 id="respuesta"
-                placeholder="Escribe la capital..."
+                placeholder="Escribe tu respuesta..."
                 autocomplete="off"
             >
-            
+
             <div id="opcionesRespuesta"></div>
 
 
@@ -445,11 +453,15 @@
                             0
                         </span>%
 
+                    </p>
+
                     <p id="tiempoFinalTexto">
+
                         ⏱️ Tiempo:
                         <span id="resultadoTiempo">
                             00:00
                         </span>
+
                     </p>
 
                 </div>
@@ -530,6 +542,8 @@
             </button>
 
         </section>
+
+
         <footer class="creditos">
             Hecho por Jason Rojas · 2026
         </footer>
