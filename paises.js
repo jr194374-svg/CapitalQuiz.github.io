@@ -184,7 +184,7 @@ const paises = [
 
     {
         pais: "China",
-        capital: "Pekín",
+        capital: ["Pekin", "Beijing"],
         continente: "Asia",
         porcentaje: 73
     },
