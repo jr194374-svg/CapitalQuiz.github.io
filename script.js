@@ -139,6 +139,12 @@ const modoCapital =
 const modoPais =
     document.getElementById("modoPais");
 
+const selectorRespuesta =
+    document.getElementById("selectorRespuesta");
+
+const opcionesRespuesta =
+    document.getElementById("opcionesRespuesta");
+
 // =====================================================
 // FUNCIONES
 // =====================================================
@@ -343,6 +349,21 @@ function siguientePregunta() {
     // Limpiar
     respuesta.value = "";
     resultado.textContent = "";
+
+    // Mostrar método de respuesta
+    if (selectorRespuesta.value === "opciones") {
+
+        respuesta.style.display = "none";
+        opcionesRespuesta.style.display = "block";
+
+        generarOpciones();
+
+    } else {
+
+        respuesta.style.display = "inline-block";
+        opcionesRespuesta.style.display = "none";
+
+    }
 
 
     // Activar controles
@@ -1418,6 +1439,238 @@ function volverAlMenuPrincipal() {
     resultado.textContent = "";
 }
 
+function generarOpciones() {
+
+    const respuestas = [];
+
+    // =====================================================
+    // MODO: ADIVINA LA CAPITAL
+    // =====================================================
+
+    if (modoJuego === "capital") {
+
+        const respuestaCorrecta =
+            Array.isArray(paisActual.capital)
+                ? paisActual.capital[0]
+                : paisActual.capital;
+
+        respuestas.push(respuestaCorrecta);
+
+
+        // Obtener países disponibles como opciones falsas
+        const candidatos =
+            preguntas.filter(pais =>
+                pais !== paisActual
+            );
+
+
+        // Mezclar candidatos
+        candidatos.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        // Agregar 3 capitales incorrectas
+        for (
+            let i = 0;
+            i < candidatos.length &&
+            respuestas.length < 4;
+            i++
+        ) {
+
+            const capital =
+                Array.isArray(candidatos[i].capital)
+                    ? candidatos[i].capital[0]
+                    : candidatos[i].capital;
+
+            if (
+                !respuestas.includes(capital)
+            ) {
+
+                respuestas.push(capital);
+            }
+        }
+
+
+        // Mezclar las 4 respuestas
+        respuestas.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        // Crear botones
+        opcionesRespuesta.innerHTML = "";
+
+        respuestas.forEach(opcion => {
+
+            const boton =
+                document.createElement("button");
+
+            boton.className =
+                "opcionRespuesta";
+
+            boton.textContent =
+                opcion;
+
+            boton.addEventListener(
+                "click",
+                () => seleccionarOpcion(
+                    opcion,
+                    boton,
+                    respuestaCorrecta
+                )
+            );
+
+            opcionesRespuesta.appendChild(
+                boton
+            );
+        });
+    }
+
+
+    // =====================================================
+    // MODO: ADIVINA EL PAÍS
+    // =====================================================
+
+    else {
+
+        const respuestaCorrecta =
+            paisActual.pais;
+
+        respuestas.push(respuestaCorrecta);
+
+
+        // Obtener países disponibles como opciones falsas
+        const candidatos =
+            preguntas.filter(pais =>
+                pais !== paisActual
+            );
+
+
+        // Mezclar candidatos
+        candidatos.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        // Agregar 3 países incorrectos
+        for (
+            let i = 0;
+            i < candidatos.length &&
+            respuestas.length < 4;
+            i++
+        ) {
+
+            const pais =
+                candidatos[i].pais;
+
+            if (
+                !respuestas.includes(pais)
+            ) {
+
+                respuestas.push(pais);
+            }
+        }
+
+
+        // Mezclar las 4 respuestas
+        respuestas.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        // Crear botones
+        opcionesRespuesta.innerHTML = "";
+
+        respuestas.forEach(opcion => {
+
+            const boton =
+                document.createElement("button");
+
+            boton.className =
+                "opcionRespuesta";
+
+            boton.textContent =
+                opcion;
+
+            boton.addEventListener(
+                "click",
+                () => seleccionarOpcion(
+                    opcion,
+                    boton,
+                    respuestaCorrecta
+                )
+            );
+
+            opcionesRespuesta.appendChild(
+                boton
+            );
+        });
+    }
+}
+
+function seleccionarOpcion(
+    opcionSeleccionada,
+    botonSeleccionado,
+    respuestaCorrecta
+) {
+
+    const botones =
+        document.querySelectorAll(
+            ".opcionRespuesta"
+        );
+
+
+    // Desactivar todos
+    botones.forEach(boton => {
+
+        boton.disabled = true;
+
+    });
+
+
+    // ¿Es correcta?
+    if (
+        opcionSeleccionada ===
+        respuestaCorrecta
+    ) {
+
+        botonSeleccionado.classList.add(
+            "correcta"
+        );
+
+        // Reutilizamos el sistema existente
+        respuesta.value =
+            opcionSeleccionada;
+
+        comprobarRespuesta();
+
+    } else {
+
+        botonSeleccionado.classList.add(
+            "incorrecta"
+        );
+
+        resultado.textContent =
+            `✘ Incorrecto. La respuesta era: ${respuestaCorrecta}`;
+
+        incorrectas++;
+
+        marcadorIncorrectas.textContent =
+            incorrectas;
+
+        racha = 0;
+
+        marcadorRacha.textContent =
+            racha;
+
+        setTimeout(() => {
+
+            siguientePregunta();
+
+        }, 1500);
+    }
+}
 
 // =====================================================
 // BOTONES
