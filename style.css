@@ -1157,3 +1157,8 @@ body::after {
     z-index: 12;
 }
 
+body::before,
+body::after {
+    pointer-events: none;
+}
+
