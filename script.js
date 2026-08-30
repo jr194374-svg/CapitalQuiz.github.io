@@ -25,7 +25,7 @@ let tiempoFinal = 0;
 let idAnimacionPuntos = 0;
 
 let modoJuego = "capital";
-
+let modoPrincipal = "capital";
 
 // =====================================================
 // ELEMENTOS DE LA PÁGINA
@@ -130,6 +130,9 @@ const menuPrincipal =
 const botonCapitales =
     document.getElementById("botonCapitales");
 
+const botonBanderas =
+    document.getElementById("botonBanderas");
+
 const botonVolverMenu =
     document.getElementById("botonVolverMenu");
 
@@ -141,6 +144,9 @@ const modoPais =
 
 const selectorRespuesta =
     document.getElementById("selectorRespuesta");
+
+const selectorModo =
+    document.querySelector(".selectorModo");
 
 const opcionesRespuesta =
     document.getElementById("opcionesRespuesta");
@@ -294,6 +300,24 @@ function actualizarMarcadores() {
         pasadas;
 }
 
+function mostrarBandera() {
+
+    const bandera =
+        document.getElementById("banderaPregunta");
+
+    if (!bandera) {
+        return;
+    }
+
+    bandera.src =
+        `https://flagcdn.com/w320/${paisActual.codigoBandera.toLowerCase()}.png`;
+
+    bandera.alt =
+        "Bandera del país";
+
+    bandera.style.display =
+        "block";
+}
 
 // =====================================================
 // SIGUIENTE PREGUNTA
@@ -319,13 +343,23 @@ function siguientePregunta() {
 
     numeroPregunta++;
 
+    const bandera =
+    document.getElementById("banderaPregunta");
+
+    if (bandera) {
+        bandera.style.display = "none";
+        bandera.src = "";
+    }
+
 
     // Número de pregunta
     numeroPreguntaTexto.textContent =
         `Pregunta ${numeroPregunta} / ${preguntas.length}`;
 
 
-    // Pregunta según el modo de juego
+    // =================================================
+    // PREGUNTA SEGÚN EL MODO
+    // =================================================
 
     if (modoJuego === "capital") {
 
@@ -334,7 +368,7 @@ function siguientePregunta() {
 
     }
 
-    else {
+    else if (modoJuego === "pais") {
 
         const capital =
             Array.isArray(paisActual.capital)
@@ -346,22 +380,45 @@ function siguientePregunta() {
 
     }
 
-    // Limpiar
+    else if (modoJuego === "bandera") {
+
+        pregunta.textContent =
+            "¿De qué país es esta bandera?";
+
+        mostrarBandera();
+    }
+
+
+    // =================================================
+    // LIMPIAR
+    // =================================================
+
     respuesta.value = "";
     resultado.textContent = "";
 
-    // Mostrar método de respuesta
+
+    // =================================================
+    // MOSTRAR MÉTODO DE RESPUESTA
+    // =================================================
+
     if (selectorRespuesta.value === "opciones") {
 
         respuesta.style.display = "none";
-        opcionesRespuesta.style.display = "block";
+
+        opcionesRespuesta.style.display =
+            "block";
 
         generarOpciones();
 
-    } else {
+    }
 
-        respuesta.style.display = "inline-block";
-        opcionesRespuesta.style.display = "none";
+    else {
+
+        respuesta.style.display =
+            "inline-block";
+
+        opcionesRespuesta.style.display =
+            "none";
 
     }
 
@@ -921,11 +978,11 @@ function comprobarRespuesta() {
     let esCorrecta = false;
 
 
-    if (modoJuego === "capital") {
+    // =================================================
+    // MODO: ADIVINA LA CAPITAL
+    // =================================================
 
-        // ---------------------------------------------
-        // MODO: ADIVINA LA CAPITAL
-        // ---------------------------------------------
+    if (modoJuego === "capital") {
 
         const capitalesCorrectas =
             Array.isArray(
@@ -943,25 +1000,30 @@ function comprobarRespuesta() {
                     ) ===
                     respuestaUsuario
             );
-
     }
 
-    else {
 
-        // ---------------------------------------------
-        // MODO: ADIVINA EL PAÍS
-        // ---------------------------------------------
+    // =================================================
+    // MODO: ADIVINA EL PAÍS
+    // =================================================
+
+    else if (
+        modoJuego === "pais" ||
+        modoJuego === "bandera"
+    ) {
 
         esCorrecta =
             normalizar(
                 paisActual.pais
             ) ===
             respuestaUsuario;
-
     }
 
 
-    // Respuesta vacía
+    // =================================================
+    // RESPUESTA VACÍA
+    // =================================================
+
     if (
         respuestaUsuario === ""
     ) {
@@ -1016,11 +1078,6 @@ function comprobarRespuesta() {
             );
 
 
-        const puntosGanados =
-            puntosBase +
-            bonusRacha;
-
-
         // Mostrar animación
         mostrarResultado(
             puntosBase,
@@ -1037,22 +1094,32 @@ function comprobarRespuesta() {
         setTimeout(() => {
 
             const mensaje =
-                document.getElementById("mensajeResultado");
+                document.getElementById(
+                    "mensajeResultado"
+                );
+
 
             if (mensaje) {
+
                 mensaje.style.opacity = "0";
                 mensaje.innerHTML = "";
             }
 
-            // Si es la última pregunta,
-            // esperar un poco antes de mostrar resultados
-            if (numeroPregunta >= preguntas.length) {
+
+            if (
+                numeroPregunta >=
+                preguntas.length
+            ) {
 
                 setTimeout(() => {
+
                     siguientePregunta();
+
                 }, 400);
 
-            } else {
+            }
+
+            else {
 
                 siguientePregunta();
 
@@ -1068,8 +1135,34 @@ function comprobarRespuesta() {
 
     else {
 
+        // Para bandera y país → mostrar PAÍS
+        // Para capital → mostrar CAPITAL
+
+        let respuestaCorrecta;
+
+
+        if (
+            modoJuego === "capital"
+        ) {
+
+            respuestaCorrecta =
+                Array.isArray(
+                    paisActual.capital
+                )
+                    ? paisActual.capital.join(" o ")
+                    : paisActual.capital;
+
+        }
+
+        else {
+
+            respuestaCorrecta =
+                paisActual.pais;
+        }
+
+
         resultado.textContent =
-            "✘ Incorrecto, intenta nuevamente.";
+            "✘ Incorrecto. Intente de nuevo";
 
 
         incorrectas++;
@@ -1295,22 +1388,25 @@ function pasarPregunta() {
     // Contar pasada
     pasadas++;
 
-
     marcadorPasadas.textContent =
         pasadas;
 
 
-    // Obtener respuesta correcta según el modo
+    // =================================================
+    // OBTENER RESPUESTA CORRECTA
+    // =================================================
 
     let respuestaCorrecta;
 
 
-    if (modoJuego === "capital") {
-
-        // Modo: Adivina la capital
+    if (
+        modoJuego === "capital"
+    ) {
 
         respuestaCorrecta =
-            Array.isArray(paisActual.capital)
+            Array.isArray(
+                paisActual.capital
+            )
                 ? paisActual.capital.join(" o ")
                 : paisActual.capital;
 
@@ -1318,11 +1414,9 @@ function pasarPregunta() {
 
     else {
 
-        // Modo: Adivina el país
-
+        // País y Bandera
         respuestaCorrecta =
             paisActual.pais;
-
     }
 
 
@@ -1333,15 +1427,18 @@ function pasarPregunta() {
     // Romper racha
     racha = 0;
 
-
     marcadorRacha.textContent =
         racha;
 
 
     // Desactivar
     respuesta.disabled = true;
-    botonResponder.disabled = true;
-    botonPasar.disabled = true;
+
+    botonResponder.disabled =
+        true;
+
+    botonPasar.disabled =
+        true;
 
 
     // Continuar
@@ -1380,9 +1477,26 @@ function formatearTiempo(milisegundos) {
 
 function abrirCapitalQuiz() {
 
+    modoPrincipal = "capital";
+    modoJuego = "capital";
+
     menuPrincipal.style.display = "none";
 
     pantallaInicio.style.display = "block";
+
+    selectorModo.style.display = "flex";
+}
+
+function abrirBanderaQuiz() {
+
+    modoPrincipal = "bandera";
+    modoJuego = "bandera";
+
+    menuPrincipal.style.display = "none";
+
+    pantallaInicio.style.display = "block";
+
+    selectorModo.style.display = "none";
 }
 
 // =====================================================
@@ -1444,105 +1558,22 @@ function generarOpciones() {
     const respuestas = [];
 
     // =====================================================
-    // MODO: ADIVINA LA CAPITAL
+    // MODO: BANDERAS
     // =====================================================
 
-    if (modoJuego === "capital") {
-
-        const respuestaCorrecta =
-            Array.isArray(paisActual.capital)
-                ? paisActual.capital[0]
-                : paisActual.capital;
-
-        respuestas.push(respuestaCorrecta);
-
-
-        // Obtener países disponibles como opciones falsas
-        const candidatos =
-            preguntas.filter(pais =>
-                pais !== paisActual
-            );
-
-
-        // Mezclar candidatos
-        candidatos.sort(
-            () => Math.random() - 0.5
-        );
-
-
-        // Agregar 3 capitales incorrectas
-        for (
-            let i = 0;
-            i < candidatos.length &&
-            respuestas.length < 4;
-            i++
-        ) {
-
-            const capital =
-                Array.isArray(candidatos[i].capital)
-                    ? candidatos[i].capital[0]
-                    : candidatos[i].capital;
-
-            if (
-                !respuestas.includes(capital)
-            ) {
-
-                respuestas.push(capital);
-            }
-        }
-
-
-        // Mezclar las 4 respuestas
-        respuestas.sort(
-            () => Math.random() - 0.5
-        );
-
-
-        // Crear botones
-        opcionesRespuesta.innerHTML = "";
-
-        respuestas.forEach(opcion => {
-
-            const boton =
-                document.createElement("button");
-
-            boton.className =
-                "opcionRespuesta";
-
-            boton.textContent =
-                opcion;
-
-            boton.addEventListener(
-                "click",
-                () => seleccionarOpcion(
-                    opcion,
-                    boton,
-                    respuestaCorrecta
-                )
-            );
-
-            opcionesRespuesta.appendChild(
-                boton
-            );
-        });
-    }
-
-
-    // =====================================================
-    // MODO: ADIVINA EL PAÍS
-    // =====================================================
-
-    else {
+    if (modoPrincipal === "bandera") {
 
         const respuestaCorrecta =
             paisActual.pais;
 
-        respuestas.push(respuestaCorrecta);
+        respuestas.push(
+            respuestaCorrecta
+        );
 
 
         // Obtener países disponibles como opciones falsas
         const candidatos =
-            preguntas.filter(pais =>
+            paises.filter(pais =>
                 pais !== paisActual
             );
 
@@ -1606,8 +1637,169 @@ function generarOpciones() {
                 boton
             );
         });
+
+        return;
     }
-}
+
+
+    // =====================================================
+    // MODO: ADIVINA LA CAPITAL
+    // =====================================================
+
+    if (modoJuego === "capital") {
+
+        const respuestaCorrecta =
+            Array.isArray(paisActual.capital)
+                ? paisActual.capital[0]
+                : paisActual.capital;
+
+        respuestas.push(
+            respuestaCorrecta
+        );
+
+
+        const candidatos =
+            preguntas.filter(pais =>
+                pais !== paisActual
+            );
+
+
+        candidatos.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        for (
+            let i = 0;
+            i < candidatos.length &&
+            respuestas.length < 4;
+            i++
+        ) {
+
+            const capital =
+                Array.isArray(candidatos[i].capital)
+                    ? candidatos[i].capital[0]
+                    : candidatos[i].capital;
+
+            if (
+                !respuestas.includes(capital)
+            ) {
+
+                respuestas.push(capital);
+            }
+        }
+
+
+        respuestas.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        opcionesRespuesta.innerHTML = "";
+
+        respuestas.forEach(opcion => {
+
+            const boton =
+                document.createElement("button");
+
+            boton.className =
+                "opcionRespuesta";
+
+            boton.textContent =
+                opcion;
+
+            boton.addEventListener(
+                "click",
+                () => seleccionarOpcion(
+                    opcion,
+                    boton,
+                    respuestaCorrecta
+                )
+            );
+
+            opcionesRespuesta.appendChild(
+                boton
+            );
+        });
+
+        return;
+    }
+
+
+    // =====================================================
+    // MODO: ADIVINA EL PAÍS POR SU CAPITAL
+    // =====================================================
+
+    const respuestaCorrecta =
+        paisActual.pais;
+
+    respuestas.push(
+        respuestaCorrecta
+    );
+
+
+    const candidatos =
+        preguntas.filter(pais =>
+            pais !== paisActual
+        );
+
+
+    candidatos.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    for (
+        let i = 0;
+        i < candidatos.length &&
+        respuestas.length < 4;
+        i++
+    ) {
+
+        const pais =
+            candidatos[i].pais;
+
+        if (
+            !respuestas.includes(pais)
+        ) {
+
+            respuestas.push(pais);
+        }
+    }
+
+
+    respuestas.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    opcionesRespuesta.innerHTML = "";
+
+    respuestas.forEach(opcion => {
+
+        const boton =
+            document.createElement("button");
+
+        boton.className =
+            "opcionRespuesta";
+
+        boton.textContent =
+            opcion;
+
+        boton.addEventListener(
+            "click",
+            () => seleccionarOpcion(
+                opcion,
+                boton,
+                respuestaCorrecta
+            )
+        );
+
+        opcionesRespuesta.appendChild(
+            boton
+        );
+    });
+}   
 
 function seleccionarOpcion(
     opcionSeleccionada,
@@ -1629,7 +1821,10 @@ function seleccionarOpcion(
     });
 
 
-    // ¿Es correcta?
+    // =================================================
+    // ¿ES CORRECTA?
+    // =================================================
+
     if (
         opcionSeleccionada ===
         respuestaCorrecta
@@ -1639,31 +1834,60 @@ function seleccionarOpcion(
             "correcta"
         );
 
-        // Reutilizamos el sistema existente
+
+        // Reutilizar sistema existente
         respuesta.value =
             opcionSeleccionada;
 
+
         comprobarRespuesta();
 
-    } else {
+    }
 
+    else {
+
+        // Marcar la opción seleccionada como incorrecta
         botonSeleccionado.classList.add(
             "incorrecta"
         );
 
+
+        // Resaltar la respuesta correcta
+        botones.forEach(boton => {
+
+            if (
+                boton.textContent ===
+                respuestaCorrecta
+            ) {
+
+                boton.classList.add(
+                    "correcta"
+                );
+
+            }
+
+        });
+
+
+        // No revelar la respuesta en texto
         resultado.textContent =
-            `✘ Incorrecto. La respuesta era: ${respuestaCorrecta}`;
+            "✘ Incorrecto";
+
 
         incorrectas++;
 
         marcadorIncorrectas.textContent =
             incorrectas;
 
+
+        // Romper racha
         racha = 0;
 
         marcadorRacha.textContent =
             racha;
 
+
+        // Dar tiempo para ver la respuesta correcta
         setTimeout(() => {
 
             siguientePregunta();
@@ -1730,6 +1954,11 @@ botonCapitales.addEventListener(
     abrirCapitalQuiz
 );
 
+botonBanderas.addEventListener(
+    "click",
+    abrirBanderaQuiz
+);
+
 botonVolverMenu.addEventListener(
     "click",
     volverAlMenuPrincipal
@@ -1752,3 +1981,5 @@ modoPais.addEventListener(
 
     }
 );
+
+
