@@ -142,7 +142,7 @@ const paises = [
 
     {
         pais: "México",
-        capital: "Ciudad de México",
+        capital: ["México", "Ciudad de México"],
         continente: "América",
         porcentaje: 75
     },
@@ -177,7 +177,7 @@ const paises = [
 
     {
         pais: "Chile",
-        capital: "Santiago",
+        capital: ["Santiago", "Santiago de chile"],
         continente: "América",
         porcentaje: 73
     },
@@ -359,7 +359,7 @@ const paises = [
 
     {
         pais: "Panamá",
-        capital: "Ciudad de Panamá",
+        capital: ["Panamá", "Ciudad de Panamá"],
         continente: "América",
         porcentaje: 57
     },
@@ -464,7 +464,7 @@ const paises = [
 
     {
         pais: "Guatemala",
-        capital: "Ciudad de Guatemala",
+        capital: ["Ciudad de Guatemala", "Guatemala"],
         continente: "América",
         porcentaje: 47
     },
@@ -660,7 +660,7 @@ const paises = [
 
     {
         pais: "Kuwait",
-        capital: "Kuwait",
+        capital: ["Kuwait", "Kuwait City"],
         continente: "Asia",
         porcentaje: 36
     },
