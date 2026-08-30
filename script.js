@@ -1477,8 +1477,9 @@ function formatearTiempo(milisegundos) {
 
 function abrirCapitalQuiz() {
 
+    alert("Capitales funciona");
+
     modoPrincipal = "capital";
-    modoJuego = "capital";
 
     menuPrincipal.style.display = "none";
 
