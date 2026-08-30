@@ -195,6 +195,16 @@ input {
     animation-delay: 0.5s;
 }
 
+.opcion:nth-child(4) {
+    animation-delay: 0.65s;
+}
+
+.opcion:nth-child(5) {
+    animation-delay: 0.8s;
+}
+
+
+
 
 /* =====================================================
    SELECTORES
