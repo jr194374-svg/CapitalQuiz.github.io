@@ -1,1269 +1,1985 @@
+// =====================================================
+// VARIABLES
+// =====================================================
 
-/* =====================================================
-   CUERPO DE LA PÁGINA
-===================================================== */
+let paisActual = null;
 
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    min-height: 100vh;
+let correctas = 0;
+let incorrectas = 0;
+let puntos = 0;
 
-    background: linear-gradient(
-        135deg,
-        #0f172a,
-        #1e3a8a,
-        #0f172a
+let preguntas = [];
+let numeroPregunta = 0;
+
+let racha = 0;
+let mejorRacha = 0;
+
+let pasadas = 0;
+let maximoPuntos = 0;
+
+let cronometroActivo = false;
+let tiempoInicio = 0;
+let intervaloCronometro = null;
+let tiempoFinal = 0;
+
+let idAnimacionPuntos = 0;
+
+let modoJuego = "capital";
+let modoPrincipal = "capital";
+
+// =====================================================
+// ELEMENTOS DE LA PÁGINA
+// =====================================================
+
+const pantallaInicio =
+    document.getElementById("pantallaInicio");
+
+const pantallaJuego =
+    document.getElementById("pantallaJuego");
+
+const pantallaFinal =
+    document.getElementById("pantallaFinal");
+
+const numeroPreguntaTexto =
+    document.getElementById("numeroPregunta");
+
+const pregunta =
+    document.getElementById("pregunta");
+
+const respuesta =
+    document.getElementById("respuesta");
+
+const resultado =
+    document.getElementById("resultado");
+
+const botonComenzar =
+    document.getElementById("botonComenzar");
+
+const botonResponder =
+    document.getElementById("botonResponder");
+
+const botonJugarDeNuevo =
+    document.getElementById("botonJugarDeNuevo");
+
+const botonTerminar =
+    document.getElementById("botonTerminar");
+
+const botonPasar =
+    document.getElementById("botonPasar");
+
+const marcadorCorrectas =
+    document.getElementById("correctas");
+
+const marcadorIncorrectas =
+    document.getElementById("incorrectas");
+
+const marcadorPuntos =
+    document.getElementById("puntos");
+
+const marcadorRacha =
+    document.getElementById("racha");
+
+const marcadorPasadas =
+    document.getElementById("pasadas");
+
+const selectorContinente =
+    document.getElementById("selectorContinente");
+
+const selectorDificultad =
+    document.getElementById("selectorDificultad");
+
+const selectorPreguntas =
+    document.getElementById("selectorPreguntas");
+
+const botonIrMenu =
+    document.getElementById("botonIrMenu");
+
+const resultadoPuntos =
+    document.getElementById("resultadoPuntos");
+
+const resultadoMejorRacha =
+    document.getElementById("resultadoMejorRacha");
+
+const resultadoCorrectas =
+    document.getElementById("resultadoCorrectas");
+
+const resultadoIncorrectas =
+    document.getElementById("resultadoIncorrectas");
+
+const resultadoPasadas =
+    document.getElementById("resultadoPasadas");
+
+const resultadoTotal =
+    document.getElementById("resultadoTotal");
+
+const resultadoRango =
+    document.getElementById("resultadoRango");
+
+const resultadoPorcentaje =
+    document.getElementById("resultadoPorcentaje");
+
+const interruptorCronometro =
+    document.getElementById("interruptorCronometro");
+
+const resultadoTiempo =
+    document.getElementById("resultadoTiempo");
+
+const menuPrincipal =
+    document.getElementById("menuPrincipal");
+
+const botonCapitales =
+    document.getElementById("botonCapitales");
+
+const botonBanderas =
+    document.getElementById("botonBanderas");
+
+const botonVolverMenu =
+    document.getElementById("botonVolverMenu");
+
+const modoCapital =
+    document.getElementById("modoCapital");
+
+const modoPais =
+    document.getElementById("modoPais");
+
+const selectorRespuesta =
+    document.getElementById("selectorRespuesta");
+
+const selectorModo =
+    document.querySelector(".selectorModo");
+
+const opcionesRespuesta =
+    document.getElementById("opcionesRespuesta");
+
+// =====================================================
+// FUNCIONES
+// =====================================================
+
+// =====================================================
+// COMENZAR JUEGO
+// =====================================================
+
+function comenzarJuego() {
+
+    // Reiniciar estadísticas
+    correctas = 0;
+    incorrectas = 0;
+    puntos = 0;
+
+    racha = 0;
+    mejorRacha = 0;
+
+    numeroPregunta = 0;
+    pasadas = 0;
+
+
+    // Obtener filtros
+    const continenteSeleccionado =
+        selectorContinente.value;
+
+    const dificultadSeleccionada =
+        selectorDificultad.value;
+
+    const cantidadPreguntas =
+        selectorPreguntas.value;
+
+
+    // Filtrar países
+    preguntas = paises.filter(pais => {
+
+        const coincideContinente =
+            continenteSeleccionado === "Todos" ||
+            pais.continente === continenteSeleccionado;
+
+        const coincideDificultad =
+            dificultadSeleccionada === "Todas" ||
+            pais.dificultad === dificultadSeleccionada;
+
+        return (
+            coincideContinente &&
+            coincideDificultad
+        );
+    });
+
+
+    // Mezclar aleatoriamente
+    preguntas.sort(
+        () => Math.random() - 0.5
     );
 
-    color: white;
 
-    overflow-x: hidden;
-}
-
-
-/* =====================================================
-   CONTENEDOR PRINCIPAL
-===================================================== */
-
-.contenedor {
-   position: relative;
-   z-index: 1;
-
-    max-width: 600px;
-    margin: 60px auto;
-    padding: 40px;
-
-    background: rgba(255, 255, 255, 0.08);
-
-    border-radius: 20px;
-
-    border: 1px solid rgba(255, 255, 255, 0.15);
-
-    box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.3);
-
-    backdrop-filter: blur(10px);
-
-    animation: aparecer 0.7s ease;
-}
-
-
-/* =====================================================
-   TÍTULO
-===================================================== */
-
-h1 {
-    font-size: 40px;
-}
-
-
-/* =====================================================
-   BOTONES
-===================================================== */
-
-button {
-    padding: 14px 30px;
-
-    font-size: 17px;
-    font-weight: bold;
-
-    cursor: pointer;
-
-    margin: 10px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    background: #2563eb;
-
-    color: white;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-button:hover {
-    transform: translateY(-3px) scale(1.02);
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.25);
-}
-
-button:active {
-    transform: scale(0.97);
-}
-
-button:disabled {
-    opacity: 0.6;
-    cursor: default;
-    transform: none;
-}
-
-
-/* =====================================================
-   INPUT
-===================================================== */
-
-input {
-    padding: 12px;
-
-    font-size: 18px;
-
-    width: 80%;
-    max-width: 350px;
-
-    box-sizing: border-box;
-
-    border-radius: 8px;
-
-    border: none;
-}
-
-
-/* =====================================================
-   PANTALLAS
-===================================================== */
-
-#pantallaInicio,
-#pantallaJuego,
-#pantallaFinal {
-    display: none;
-}
-
-
-/* =====================================================
-   RESULTADO NORMAL
-===================================================== */
-
-#resultado {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-#resultado strong {
-    display: block;
-
-    margin-top: 8px;
-
-    font-size: 22px;
-}
-
-
-/* =====================================================
-   CONFIGURACIÓN
-===================================================== */
-
-.configuracion {
-    margin: 30px auto;
-
-    max-width: 350px;
-}
-
-.opcion {
-    margin: 15px 0;
-
-    text-align: left;
-
-    opacity: 0;
-
-    animation:
-        aparecer 0.5s ease forwards;
-}
-
-.opcion label {
-    display: block;
-
-    margin-bottom: 7px;
-
-    font-size: 17px;
-
-    font-weight: bold;
-}
-
-.opcion:nth-child(1) {
-    animation-delay: 0.2s;
-}
-
-.opcion:nth-child(2) {
-    animation-delay: 0.35s;
-}
-
-.opcion:nth-child(3) {
-    animation-delay: 0.5s;
-}
-
-.opcion:nth-child(4) {
-    animation-delay: 0.65s;
-}
-
-.opcion:nth-child(5) {
-    animation-delay: 0.8s;
-}
-
-
-
-/* =====================================================
-   SELECTORES
-===================================================== */
-
-select {
-    padding: 12px 15px;
-
-    width: 100%;
-
-    box-sizing: border-box;
-
-    font-size: 16px;
-
-    border-radius: 10px;
-
-    border: none;
-
-    background: white;
-
-    color: #1e293b;
-
-    cursor: pointer;
-}
-
-
-/* =====================================================
-   ESTADÍSTICAS
-===================================================== */
-
-.estadisticas {
-    margin: 25px auto;
-
-    font-size: 20px;
-}
-
-.estadisticas p {
-    margin: 12px;
-}
-
-.estadisticas span {
-    font-weight: bold;
-}
-
-
-/* =====================================================
-   ANIMACIÓN GENERAL
-===================================================== */
-
-@keyframes aparecer {
-
-    from {
-        opacity: 0;
-
-        transform:
-            translateY(20px);
+    // Limitar cantidad
+    if (cantidadPreguntas !== "todos") {
+
+        preguntas =
+            preguntas.slice(
+                0,
+                Number(cantidadPreguntas)
+            );
     }
 
-    to {
-        opacity: 1;
 
-        transform:
-            translateY(0);
-    }
-}
+    // Verificar preguntas
+    if (preguntas.length === 0) {
 
+        alert(
+            "No hay países que coincidan con estos filtros."
+        );
 
-/* =====================================================
-   FONDO ANIMADO
-===================================================== */
-
-.fondo-animado {
-   position: fixed;
-   z-index: 0;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-
-    pointer-events: none;
-
-    z-index: 0;
-}
-
-
-/* =====================================================
-   PARTÍCULAS
-===================================================== */
-
-.fondo-animado span {
-    position: absolute;
-
-    display: block;
-
-    width: 6px;
-    height: 6px;
-
-    background:
-        rgba(255, 255, 255, 0.35);
-
-    border-radius: 50%;
-
-    animation:
-        moverParticula 10s linear infinite;
-}
-
-
-/* Posiciones */
-
-.fondo-animado span:nth-child(1) {
-    left: 10%;
-    top: 90%;
-    animation-duration: 12s;
-}
-
-.fondo-animado span:nth-child(2) {
-    left: 25%;
-    top: 70%;
-    animation-duration: 9s;
-}
-
-.fondo-animado span:nth-child(3) {
-    left: 40%;
-    top: 100%;
-    animation-duration: 14s;
-}
-
-.fondo-animado span:nth-child(4) {
-    left: 55%;
-    top: 80%;
-    animation-duration: 11s;
-}
-
-.fondo-animado span:nth-child(5) {
-    left: 70%;
-    top: 95%;
-    animation-duration: 13s;
-}
-
-.fondo-animado span:nth-child(6) {
-    left: 80%;
-    top: 60%;
-    animation-duration: 10s;
-}
-
-.fondo-animado span:nth-child(7) {
-    left: 90%;
-    top: 85%;
-    animation-duration: 15s;
-}
-
-.fondo-animado span:nth-child(8) {
-    left: 5%;
-    top: 50%;
-    animation-duration: 8s;
-}
-
-
-/* =====================================================
-   MOVIMIENTO DE PARTÍCULAS
-===================================================== */
-
-@keyframes moverParticula {
-
-    0% {
-        transform:
-            translateY(0)
-            translateX(0);
-
-        opacity: 0;
+        return;
     }
 
-    10% {
-        opacity: 1;
+
+    // Calcular máximo
+    maximoPuntos =
+        calcularMaximoPuntos();
+
+    // =================================================
+    // CRONÓMETRO
+    // =================================================
+
+    cronometroActivo =
+        interruptorCronometro.checked;
+
+
+    if (cronometroActivo) {
+
+        document.getElementById(
+            "cronometro"
+        ).style.display = "block";
+
+        iniciarCronometro();
+
     }
 
-    50% {
-        transform:
-            translateY(-50vh)
-            translateX(40px);
+    else {
+
+        document.getElementById(
+            "cronometro"
+        ).style.display = "none";
+
+        clearInterval(
+            intervaloCronometro
+        );
     }
 
-    90% {
-        opacity: 1;
+    // Actualizar marcador
+    actualizarMarcadores();
+
+
+    // Cambiar pantalla
+    pantallaInicio.style.display = "none";
+    pantallaFinal.style.display = "none";
+    pantallaJuego.style.display = "block";
+
+
+    // Mostrar primera pregunta
+    siguientePregunta();
+}
+
+
+// =====================================================
+// ACTUALIZAR MARCADORES
+// =====================================================
+
+function actualizarMarcadores() {
+
+    marcadorCorrectas.textContent =
+        correctas;
+
+    marcadorIncorrectas.textContent =
+        incorrectas;
+
+    marcadorPuntos.textContent =
+        puntos;
+
+    marcadorRacha.textContent =
+        racha;
+
+    marcadorPasadas.textContent =
+        pasadas;
+}
+
+function mostrarBandera() {
+
+    const bandera =
+        document.getElementById("banderaPregunta");
+
+    if (!bandera) {
+        return;
     }
 
-    100% {
-        transform:
-            translateY(-110vh)
-            translateX(-40px);
+    bandera.src =
+        `https://flagcdn.com/w320/${paisActual.codigoBandera.toLowerCase()}.png`;
 
-        opacity: 0;
-    }
+    bandera.alt =
+        "Bandera del país";
+
+    bandera.style.display =
+        "block";
 }
 
+// =====================================================
+// SIGUIENTE PREGUNTA
+// =====================================================
 
-/* =====================================================
-   LUCES DIFUSAS
-===================================================== */
+function siguientePregunta() {
 
-body::before,
-body::after {
-    content: "";
+    // ¿Terminó el juego?
+    if (
+        numeroPregunta >=
+        preguntas.length
+    ) {
 
-    position: fixed;
+        terminarJuego();
 
-    width: 300px;
-    height: 300px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255, 255, 255, 0.04);
-
-    filter: blur(40px);
-
-    z-index: 0;
-
-    animation:
-        flotar 8s ease-in-out infinite;
-}
-
-body::before {
-    top: 10%;
-    left: 10%;
-}
-
-body::after {
-    bottom: 10%;
-    right: 10%;
-
-    animation-delay: 4s;
-}
-
-
-/* =====================================================
-   MOVIMIENTO DE LAS LUCES
-===================================================== */
-
-@keyframes flotar {
-
-    0% {
-        transform:
-            translate(0, 0);
+        return;
     }
 
-    50% {
-        transform:
-            translate(40px, -30px);
+
+    // Obtener país
+    paisActual =
+        preguntas[numeroPregunta];
+
+    numeroPregunta++;
+
+    const bandera =
+    document.getElementById("banderaPregunta");
+
+    if (bandera) {
+        bandera.style.display = "none";
+        bandera.src = "";
     }
 
-    100% {
-        transform:
-            translate(0, 0);
-    }
-}
 
+    // Número de pregunta
+    numeroPreguntaTexto.textContent =
+        `Pregunta ${numeroPregunta} / ${preguntas.length}`;
 
-/* =====================================================
-   MARCADOR DE PUNTOS
-===================================================== */
 
-#pantallaJuego {
-    position: relative;
-}
+    // =================================================
+    // PREGUNTA SEGÚN EL MODO
+    // =================================================
 
-.marcadorPuntos {
-    position: absolute;
+    if (modoJuego === "capital") {
 
-    top: -20px;
-    right: 20px;
+        pregunta.textContent =
+            `¿Cuál es la capital de ${paisActual.pais}?`;
 
-    background:
-        rgba(255, 255, 255, 0.12);
-
-    padding: 10px 18px;
-
-    border-radius: 12px;
-
-    font-size: 20px;
-
-    font-weight: bold;
-
-    box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.2);
-
-    backdrop-filter: blur(8px);
-
-    z-index: 5;
-}
-
-
-/* =====================================================
-   MENSAJE DE RESULTADO
-===================================================== */
-
-#mensajeResultado {
-    position: absolute;
-
-    top: 30%;
-    left: 50%;
-
-    width: 100%;
-
-    text-align: center;
-
-    pointer-events: none;
-
-    z-index: 20;
-
-    opacity: 0;
-
-    transform: translateX(-50%);
-}
-
-
-/* =====================================================
-   TÍTULO "CORRECTO"
-===================================================== */
-
-.correctoTitulo {
-    font-size: 28px;
-
-    font-weight: bold;
-
-    opacity: 1;
-
-    transition:
-        opacity 0.2s ease;
-
-    animation:
-        aparecerCorrecto
-        0.35s
-        ease-out
-        forwards;
-}
-
-
-/* =====================================================
-   DETALLE DE PUNTOS
-===================================================== */
-
-.puntosDetalle {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 25px;
-
-    margin-top: 12px;
-
-    font-size: 20px;
-
-    font-weight: bold;
-
-    opacity: 1;
-
-    transition:
-        transform 0.35s ease,
-        opacity 0.35s ease;
-}
-
-
-/* Puntos normales */
-
-.puntosBase {
-    color: white;
-
-    transition:
-        transform 0.35s ease;
-}
-
-
-/* Bonus de racha */
-
-.puntosBonus {
-    color: #facc15;
-
-    transition:
-        transform 0.35s ease;
-}
-
-
-/* =====================================================
-   FUSIÓN DE LOS DOS PUNTOS
-===================================================== */
-
-.puntosDetalle.fusionando {
-    opacity: 1;
-}
-
-.puntosDetalle.fusionando .puntosBase {
-    transform: translateX(35px) scale(0.8);
-}
-
-.puntosDetalle.fusionando .puntosBonus {
-    transform: translateX(-35px) scale(0.8);
-}
-
-/* =====================================================
-   PUNTOS COMBINADOS
-===================================================== */
-
-.puntosCombinados {
-
-    margin-top: 12px;
-
-    font-size: 32px;
-
-    font-weight: bold;
-
-    color: #facc15;
-
-    text-shadow:
-        0 0 10px rgba(250, 204, 21, 0.7),
-        0 0 25px rgba(250, 204, 21, 0.4);
-
-    opacity: 0;
-
-    transform:
-        scale(0.5);
-
-    pointer-events: none;
-}
-
-
-/* Aparece después de la fusión */
-
-.puntosCombinados.mostrar {
-
-    animation:
-        aparecerTotal
-        0.35s
-        ease-out
-        forwards;
-}
-
-
-/* =====================================================
-   PUNTOS VOLANDO
-===================================================== */
-
-.puntosVolando {
-
-    position: fixed;
-
-    z-index: 1000;
-
-    margin: 0;
-
-    font-size: 32px;
-
-    font-weight: bold;
-
-    color: #facc15;
-
-    text-shadow:
-        0 0 10px rgba(250, 204, 21, 0.7),
-        0 0 25px rgba(250, 204, 21, 0.4);
-
-    pointer-events: none;
-
-    white-space: nowrap;
-
-    opacity: 1;
-
-    transform:
-        translate(-50%, -50%)
-        scale(1);
-
-    transition:
-        left 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-        top 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.55s ease;
-}
-
-
-/* =====================================================
-   PULSO DEL MARCADOR
-===================================================== */
-
-.marcadorPuntos.recibiendo {
-
-    animation:
-        pulsoMarcador
-        0.35s
-        ease-out;
-}
-
-
-/* =====================================================
-   ANIMACIONES
-===================================================== */
-
-@keyframes aparecerCorrecto {
-
-    0% {
-
-        opacity: 0;
-
-        transform:
-            translateY(10px)
-            scale(0.85);
     }
 
-    100% {
+    else if (modoJuego === "pais") {
 
-        opacity: 1;
+        const capital =
+            Array.isArray(paisActual.capital)
+                ? paisActual.capital[0]
+                : paisActual.capital;
 
-        transform:
-            translateY(0)
-            scale(1);
-    }
-}
+        pregunta.textContent =
+            `¿De qué país es la capital ${capital}?`;
 
-
-@keyframes aparecerTotal {
-
-    0% {
-        opacity: 0;
-        transform: scale(0.5);
     }
 
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
+    else if (modoJuego === "bandera") {
 
-@keyframes pulsoMarcador {
+        pregunta.textContent =
+            "¿De qué país es esta bandera?";
 
-    0% {
-
-        transform:
-            scale(1);
+        mostrarBandera();
     }
 
-    50% {
 
-        transform:
-            scale(1.18);
+    // =================================================
+    // LIMPIAR
+    // =================================================
+
+    respuesta.value = "";
+    resultado.textContent = "";
+
+
+    // =================================================
+    // MOSTRAR MÉTODO DE RESPUESTA
+    // =================================================
+
+    if (selectorRespuesta.value === "opciones") {
+
+        respuesta.style.display = "none";
+
+        opcionesRespuesta.style.display =
+            "block";
+
+        generarOpciones();
+
     }
 
-    100% {
+    else {
 
-        transform:
-            scale(1);
-    }
-}
+        respuesta.style.display =
+            "inline-block";
 
-/* =====================================================
-   INTERRUPTOR DEL CRONÓMETRO
-===================================================== */
+        opcionesRespuesta.style.display =
+            "none";
 
-.switch {
-    position: relative;
-
-    display: inline-block;
-
-    width: 58px;
-    height: 30px;
-
-    cursor: pointer;
-}
-
-
-/* Ocultar checkbox */
-
-.switch input {
-    opacity: 0;
-
-    width: 0;
-    height: 0;
-}
-
-
-/* Fondo del interruptor */
-
-.slider {
-    position: absolute;
-
-    inset: 0;
-
-    background: rgba(255, 255, 255, 0.2);
-
-    border: 1px solid rgba(255, 255, 255, 0.2);
-
-    border-radius: 30px;
-
-    transition:
-        background 0.3s ease,
-        box-shadow 0.3s ease;
-}
-
-
-/* Bolita */
-
-.slider::before {
-    content: "";
-
-    position: absolute;
-
-    width: 22px;
-    height: 22px;
-
-    left: 3px;
-    top: 3px;
-
-    background: white;
-
-    border-radius: 50%;
-
-    box-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.3);
-
-    transition:
-        transform 0.3s ease;
-}
-
-
-/* ACTIVADO */
-
-.switch input:checked + .slider {
-    background: #2563eb;
-
-    box-shadow:
-        0 0 12px rgba(37, 99, 235, 0.5);
-}
-
-
-/* Mover bolita */
-
-.switch input:checked + .slider::before {
-    transform:
-        translateX(28px);
-}
-
-/* =====================================================
-   CRONÓMETRO
-===================================================== */
-
-.cronometro {
-    margin: 15px auto;
-
-    width: fit-content;
-
-    padding: 8px 16px;
-
-    border-radius: 10px;
-
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    border:
-        1px solid rgba(255, 255, 255, 0.12);
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    backdrop-filter: blur(8px);
-}
-
-/* =====================================================
-   MENÚ PRINCIPAL
-===================================================== */
-
-#menuPrincipal {
-    animation: aparecer 0.7s ease;
-}
-
-#menuPrincipal p {
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-
-
-/* =====================================================
-   TARJETAS DE MODOS
-===================================================== */
-
-.modosJuego {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 15px;
-
-    max-width: 400px;
-
-    margin: 0 auto;
-}
-
-
-.modoJuego {
-
-    width: 100%;
-
-    min-height: 90px;
-
-    margin: 0;
-
-    padding: 15px 20px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 4px;
-
-    border-radius: 15px;
-
-    background:
-        rgba(255, 255, 255, 0.10);
-
-    border:
-        1px solid rgba(255, 255, 255, 0.15);
-
-    backdrop-filter: blur(8px);
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.modoJuego strong {
-
-    font-size: 20px;
-}
-
-
-.modoJuego span {
-
-    font-size: 14px;
-
-    font-weight: normal;
-
-    opacity: 0.75;
-}
-
-
-.modoJuego:not(:disabled):hover {
-
-    transform:
-        translateY(-4px)
-        scale(1.02);
-
-    background:
-        rgba(255, 255, 255, 0.16);
-
-    box-shadow:
-        0 10px 25px
-        rgba(0, 0, 0, 0.25);
-}
-
-
-/* =====================================================
-   MODOS BLOQUEADOS
-===================================================== */
-
-.modoBloqueado {
-
-    opacity: 0.45;
-
-    cursor: default;
-}
-
-/* =====================================================
-   CRÉDITOS
-===================================================== */
-
-.creditos {
-    margin-top: 35px;
-
-    font-size: 13px;
-
-    opacity: 0.5;
-}
-
-/* =====================================================
-   SELECTOR DE MODO
-===================================================== */
-
-.selectorModo {
-
-    display: flex;
-
-    width: 100%;
-
-    max-width: 500px;
-
-    margin: 30px auto;
-
-    border-radius: 16px;
-
-    overflow: hidden;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.2);
-
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    backdrop-filter: blur(8px);
-}
-
-
-/* =====================================================
-   OPCIONES DEL MODO
-===================================================== */
-
-.selectorModo button {
-
-    flex: 1;
-
-    min-height: 130px;
-
-    margin: 0;
-
-    padding: 18px;
-
-    border-radius: 0;
-
-    background:
-        transparent;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 5px;
-
-    box-shadow: none;
-
-    transition:
-        opacity 0.25s ease,
-        background 0.25s ease,
-        transform 0.2s ease;
-}
-
-
-/* Línea divisoria */
-
-.selectorModo button + button {
-
-    border-left:
-        1px solid
-        rgba(255, 255, 255, 0.2);
-}
-
-
-/* =====================================================
-   ICONO
-===================================================== */
-
-.modoIcono {
-
-    font-size: 32px;
-
-    margin-bottom: 5px;
-}
-
-
-/* =====================================================
-   TÍTULO
-===================================================== */
-
-.selectorModo strong {
-
-    font-size: 17px;
-}
-
-
-/* =====================================================
-   DESCRIPCIÓN
-===================================================== */
-
-.modoDescripcion {
-
-    font-size: 13px;
-
-    opacity: 0.75;
-}
-
-
-/* =====================================================
-   MODO SELECCIONADO
-===================================================== */
-
-.selectorModo button.modoSeleccionado {
-
-    background:
-        rgba(37, 99, 235, 0.35);
-
-    opacity: 1;
-
-    transform: none;
-}
-
-
-/* =====================================================
-   MODO NO SELECCIONADO
-===================================================== */
-
-.selectorModo button:not(.modoSeleccionado) {
-
-    opacity: 0.35;
-}
-
-
-/* =====================================================
-   HOVER
-===================================================== */
-
-.selectorModo button:not(.modoSeleccionado):hover {
-
-    opacity: 0.7;
-
-    background:
-        rgba(255, 255, 255, 0.06);
-}
-
-@media (max-width: 700px) and (orientation: landscape) {
-
-    body {
-        min-height: 100vh;
-        overflow-y: auto;
     }
 
-    .contenedor {
-        max-width: 90%;
-        margin: 20px auto;
-        padding: 20px;
+
+    // Activar controles
+    respuesta.disabled = false;
+    botonResponder.disabled = false;
+    botonPasar.disabled = false;
+
+
+    respuesta.focus();
+}
+
+
+// =====================================================
+// PUNTOS POR DIFICULTAD
+// =====================================================
+
+function obtenerPuntos(dificultad) {
+
+    if (dificultad === "Fácil") {
+        return 100;
     }
 
-    h1 {
-        font-size: 30px;
-        margin: 10px 0;
+    if (dificultad === "Media") {
+        return 200;
     }
 
-    .configuracion {
-        margin: 15px auto;
-        max-width: 320px;
+    if (dificultad === "Difícil") {
+        return 300;
     }
 
-    .opcion {
-        margin: 8px 0;
+    return 0;
+}
+
+
+// =====================================================
+// BONUS POR RACHA
+// =====================================================
+
+function obtenerBonusRacha(rachaActual) {
+
+    if (rachaActual === 1) {
+        return 0;
     }
 
-    .opcion label {
-        font-size: 15px;
-        margin-bottom: 4px;
+    return rachaActual * 5;
+}
+
+
+// =====================================================
+// MOSTRAR RESULTADO Y ANIMAR PUNTOS
+// =====================================================
+
+function mostrarResultado(puntosBase, bonusRacha) {
+
+    const mensaje =
+        document.getElementById("mensajeResultado");
+
+    const marcador =
+        document.querySelector(".marcadorPuntos");
+
+    const total =
+        puntosBase + bonusRacha;
+
+
+    // =========================================
+    // CREAR MENSAJE
+    // =========================================
+
+    mensaje.innerHTML = `
+
+        <div class="correctoTitulo">
+            ✔ ¡CORRECTO!
+        </div>
+
+        <div class="puntosDetalle">
+
+            <span class="puntosBase">
+                +${puntosBase}
+            </span>
+
+            <span class="puntosBonus">
+                🔥 +${bonusRacha}
+            </span>
+
+        </div>
+
+        <div class="puntosCombinados">
+            +${total}
+        </div>
+
+    `;
+
+    mensaje.style.opacity = "1";
+
+
+    const titulo =
+        mensaje.querySelector(".correctoTitulo");
+
+    const detalle =
+        mensaje.querySelector(".puntosDetalle");
+
+    const combinado =
+        mensaje.querySelector(".puntosCombinados");
+
+    // =========================================
+    // ETAPA 1 — APARECEN
+    // =========================================
+
+    detalle.style.opacity = "0";
+    detalle.style.transform = "scale(0.85)";
+
+    setTimeout(() => {
+
+        detalle.style.opacity = "1";
+        detalle.style.transform = "scale(1)";
+
+    }, 50);
+
+
+    // =========================================
+    // ETAPA 2 — FUSIÓN
+    // =========================================
+
+    setTimeout(() => {
+
+        // Desaparece el "¡CORRECTO!"
+        titulo.style.opacity = "0";
+
+        // Los puntos comienzan a juntarse
+        detalle.classList.add("fusionando");
+
+    }, 300);
+
+
+    // =========================================
+    // ETAPA 3 — DESAPARECEN Y APARECE EL TOTAL
+    // =========================================
+
+    setTimeout(() => {
+
+        // Los dos puntos ya terminaron de juntarse
+        detalle.style.display = "none";
+
+
+        // Aparece el total
+        combinado.classList.add("mostrar");
+
+    }, 620);
+
+
+    // =========================================
+    // ETAPA 4 — TOTAL VUELA AL MARCADOR
+    // =========================================
+
+    setTimeout(() => {
+
+        if (!marcador) return;
+
+
+        // Obtener posición actual del total
+        const origen =
+            combinado.getBoundingClientRect();
+
+
+        // Obtener posición del marcador
+        const destino =
+            marcador.getBoundingClientRect();
+
+
+        // Centro del total
+        const origenX =
+            origen.left +
+            origen.width / 2;
+
+        const origenY =
+            origen.top +
+            origen.height / 2;
+
+
+        // Centro del marcador
+        const destinoX =
+            destino.left +
+            destino.width / 2;
+
+        const destinoY =
+            destino.top +
+            destino.height / 2;
+
+
+        // =========================================
+        // CREAR COPIA DEL TOTAL
+        // =========================================
+
+        const puntosVolando =
+            document.createElement("div");
+
+        puntosVolando.className =
+            "puntosVolando";
+
+        puntosVolando.textContent =
+            `+${total}`;
+
+
+        document.body.appendChild(
+            puntosVolando
+        );
+
+
+        // =========================================
+        // POSICIÓN INICIAL
+        // =========================================
+
+        puntosVolando.style.left =
+            `${origenX}px`;
+
+        puntosVolando.style.top =
+            `${origenY}px`;
+
+        puntosVolando.style.transform =
+            "translate(-50%, -50%) scale(1)";
+
+        puntosVolando.style.opacity =
+            "1";
+
+
+        // Ocultar el original
+        combinado.style.opacity = "0";
+
+
+        // Forzar al navegador
+        void puntosVolando.offsetWidth;
+
+
+        // =========================================
+        // VOLAR AL MARCADOR
+        // =========================================
+
+        requestAnimationFrame(() => {
+
+            puntosVolando.style.left =
+                `${destinoX}px`;
+
+            puntosVolando.style.top =
+                `${destinoY}px`;
+
+            puntosVolando.style.transform =
+                "translate(-50%, -50%) scale(0.35)";
+
+            puntosVolando.style.opacity =
+                "0";
+
+        });
+
+
+        // =========================================
+        // ANIMAR CONTADOR
+        // =========================================
+
+        const puntosIniciales =
+            puntos;
+
+        idAnimacionPuntos++;
+        const idActual = idAnimacionPuntos;
+
+        const duracion =
+            700;
+
+        const tiempoInicial =
+            performance.now();
+
+
+        function actualizarPuntos(tiempo) {
+
+            if (idActual !== idAnimacionPuntos) {
+                return;
+            }
+            
+            const progreso =
+                Math.min(
+                    (tiempo - tiempoInicial) /
+                    duracion,
+                    1
+                );
+
+
+            const suavizado =
+                1 -
+                Math.pow(
+                    1 - progreso,
+                    3
+                );
+
+
+            puntos =
+                Math.floor(
+                    puntosIniciales +
+                    total * suavizado
+                );
+
+
+            marcadorPuntos.textContent =
+                puntos;
+
+
+            if (progreso < 1) {
+
+                requestAnimationFrame(
+                    actualizarPuntos
+                );
+
+            } else {
+
+                puntos =
+                    puntosIniciales + total;
+
+                marcadorPuntos.textContent =
+                    puntos;
+            }
+        }
+
+
+        requestAnimationFrame(
+            actualizarPuntos
+        );
+
+
+        // =========================================
+        // PULSO AL LLEGAR
+        // =========================================
+
+        setTimeout(() => {
+
+            marcador.classList.remove(
+                "recibiendo"
+            );
+
+            void marcador.offsetWidth;
+
+            marcador.classList.add(
+                "recibiendo"
+            );
+
+        }, 650);
+
+
+        // =========================================
+        // ELIMINAR TOTAL VOLANDO
+        // =========================================
+
+        setTimeout(() => {
+
+            puntosVolando.remove();
+
+        }, 750);
+
+
+    }, 850);
+
+
+    // =========================================
+    // LIMPIAR MENSAJE
+    // =========================================
+
+}
+
+
+// =====================================================
+// ANIMAR CONTADOR
+// =====================================================
+
+function animarContador(
+    cantidad
+) {
+
+    const puntosIniciales =
+        puntos;
+
+    const duracion =
+        700;
+
+    const tiempoInicial =
+        performance.now();
+
+
+    function actualizar(tiempo) {
+
+        const progreso =
+            Math.min(
+                (tiempo - tiempoInicial) /
+                duracion,
+                1
+            );
+
+
+        // Suavizado
+        const suavizado =
+            1 -
+            Math.pow(
+                1 - progreso,
+                3
+            );
+
+
+        puntos =
+            Math.floor(
+                puntosIniciales +
+                cantidad * suavizado
+            );
+
+
+        marcadorPuntos.textContent =
+            puntos;
+
+
+        if (progreso < 1) {
+
+            requestAnimationFrame(
+                actualizar
+            );
+
+        } else {
+
+            puntos =
+                puntosIniciales +
+                cantidad;
+
+            marcadorPuntos.textContent =
+                puntos;
+        }
     }
 
-    select {
-        padding: 8px 12px;
-        font-size: 14px;
+
+    requestAnimationFrame(
+        actualizar
+    );
+}
+
+
+// =====================================================
+// CALCULAR MÁXIMO DE PUNTOS
+// =====================================================
+
+function calcularMaximoPuntos() {
+
+    let maximo = 0;
+
+
+    for (
+        let i = 0;
+        i < preguntas.length;
+        i++
+    ) {
+
+        const dificultad =
+            preguntas[i].dificultad;
+
+
+        const puntosBase =
+            obtenerPuntos(
+                dificultad
+            );
+
+
+        const rachaMaxima =
+            i + 1;
+
+
+        const bonusRacha =
+            obtenerBonusRacha(
+                rachaMaxima
+            );
+
+
+        maximo +=
+            puntosBase +
+            bonusRacha;
     }
 
-    button {
-        padding: 10px 20px;
-        font-size: 15px;
-        margin: 6px;
+
+    return maximo;
+}
+
+
+// =====================================================
+// OBTENER RANGO
+// =====================================================
+
+function obtenerRango(
+    porcentaje
+) {
+
+    if (porcentaje >= 100) {
+        return "🌎👑 DIOS DE LAS CAPITALES";
+    }
+
+    if (porcentaje >= 95) {
+        return "🔥 Maestro absoluto";
+    }
+
+    if (porcentaje >= 85) {
+        return "👑 Leyenda de la geografía";
+    }
+
+    if (porcentaje >= 75) {
+        return "🎓 Maestro de las capitales";
+    }
+
+    if (porcentaje >= 60) {
+        return "🌍 Conocedor del mundo";
+    }
+
+    if (porcentaje >= 40) {
+        return "🧭 Viajero";
+    }
+
+    if (porcentaje >= 20) {
+        return "🌎 Explorador";
+    }
+
+    return "🗺️ Turista perdido";
+}
+
+
+// =====================================================
+// COMPROBAR RESPUESTA
+// =====================================================
+
+function comprobarRespuesta() {
+
+    // Normalizar texto
+    const normalizar =
+        texto => {
+
+            return texto
+                .normalize("NFD")
+                .replace(
+                    /[\u0300-\u036f]/g,
+                    ""
+                )
+                .toLowerCase()
+                .trim();
+        };
+
+
+    const respuestaUsuario =
+        normalizar(
+            respuesta.value
+        );
+
+
+    // =================================================
+    // COMPROBAR SEGÚN EL MODO
+    // =================================================
+
+    let esCorrecta = false;
+
+
+    // =================================================
+    // MODO: ADIVINA LA CAPITAL
+    // =================================================
+
+    if (modoJuego === "capital") {
+
+        const capitalesCorrectas =
+            Array.isArray(
+                paisActual.capital
+            )
+                ? paisActual.capital
+                : [paisActual.capital];
+
+
+        esCorrecta =
+            capitalesCorrectas.some(
+                capital =>
+                    normalizar(
+                        capital
+                    ) ===
+                    respuestaUsuario
+            );
+    }
+
+
+    // =================================================
+    // MODO: ADIVINA EL PAÍS
+    // =================================================
+
+    else if (
+        modoJuego === "pais" ||
+        modoJuego === "bandera"
+    ) {
+
+        esCorrecta =
+            normalizar(
+                paisActual.pais
+            ) ===
+            respuestaUsuario;
+    }
+
+
+    // =================================================
+    // RESPUESTA VACÍA
+    // =================================================
+
+    if (
+        respuestaUsuario === ""
+    ) {
+
+        resultado.textContent =
+            "⚠️ Escribe una respuesta.";
+
+        return;
+    }
+
+
+    // =================================================
+    // CORRECTA
+    // =================================================
+
+    if (esCorrecta) {
+
+        correctas++;
+
+        marcadorCorrectas.textContent =
+            correctas;
+
+
+        // Aumentar racha
+        racha++;
+
+
+        if (
+            racha >
+            mejorRacha
+        ) {
+
+            mejorRacha =
+                racha;
+        }
+
+
+        marcadorRacha.textContent =
+            racha;
+
+
+        // Calcular puntos
+        const puntosBase =
+            obtenerPuntos(
+                paisActual.dificultad
+            );
+
+
+        const bonusRacha =
+            obtenerBonusRacha(
+                racha
+            );
+
+
+        // Mostrar animación
+        mostrarResultado(
+            puntosBase,
+            bonusRacha
+        );
+
+
+        // Desactivar controles
+        botonResponder.disabled = true;
+        botonPasar.disabled = true;
+        respuesta.disabled = true;
+
+
+        setTimeout(() => {
+
+            const mensaje =
+                document.getElementById(
+                    "mensajeResultado"
+                );
+
+
+            if (mensaje) {
+
+                mensaje.style.opacity = "0";
+                mensaje.innerHTML = "";
+            }
+
+
+            if (
+                numeroPregunta >=
+                preguntas.length
+            ) {
+
+                setTimeout(() => {
+
+                    siguientePregunta();
+
+                }, 400);
+
+            }
+
+            else {
+
+                siguientePregunta();
+
+            }
+
+        }, 1550);
+    }
+
+
+    // =================================================
+    // INCORRECTA
+    // =================================================
+
+    else {
+
+        // Para bandera y país → mostrar PAÍS
+        // Para capital → mostrar CAPITAL
+
+        let respuestaCorrecta;
+
+
+        if (
+            modoJuego === "capital"
+        ) {
+
+            respuestaCorrecta =
+                Array.isArray(
+                    paisActual.capital
+                )
+                    ? paisActual.capital.join(" o ")
+                    : paisActual.capital;
+
+        }
+
+        else {
+
+            respuestaCorrecta =
+                paisActual.pais;
+        }
+
+
+        resultado.textContent =
+            "✘ Incorrecto. Intente de nuevo";
+
+
+        incorrectas++;
+
+
+        marcadorIncorrectas.textContent =
+            incorrectas;
+
+
+        // Romper racha
+        racha = 0;
+
+
+        marcadorRacha.textContent =
+            racha;
     }
 }
 
-/* =====================================================
-   OPCIONES DE RESPUESTA
-===================================================== */
+// =====================================================
+// CRONÓMETRO
+// =====================================================
 
-#opcionesRespuesta {
-    display: none;
+function iniciarCronometro() {
 
-    width: 80%;
-    max-width: 400px;
+    // Detener cualquier cronómetro anterior
+    clearInterval(intervaloCronometro);
 
-    margin: 20px auto;
-}
 
-.opcionRespuesta {
-    display: block;
+    // Guardar momento de inicio
+    tiempoInicio = Date.now();
 
-    width: 100%;
 
-    margin: 10px 0;
-    padding: 14px 18px;
+    // Reiniciar tiempo
+    tiempoFinal = 0;
 
-    box-sizing: border-box;
 
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    // Actualizar inmediatamente
+    actualizarCronometro();
 
-    border-radius: 12px;
 
-    background: rgba(255, 255, 255, 0.08);
-
-    color: white;
-
-    font-size: 17px;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.opcionRespuesta:hover {
-    transform: translateY(-2px);
-
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.opcionRespuesta:disabled {
-    cursor: default;
-}
-
-.opcionRespuesta.correcta {
-    background: rgba(34, 197, 94, 0.35);
-    border-color: #22c55e;
-}
-
-.opcionRespuesta.incorrecta {
-    background: rgba(239, 68, 68, 0.35);
-    border-color: #ef4444;
+    // Actualizar cada segundo
+    intervaloCronometro =
+        setInterval(
+            actualizarCronometro,
+            1000
+        );
 }
 
 
-/* =====================================================
-   BANDERA DE LA PREGUNTA
-===================================================== */
+// =====================================================
+// ACTUALIZAR CRONÓMETRO
+// =====================================================
 
-.banderaPregunta {
+function actualizarCronometro() {
 
-    width: 180px;
-    height: 120px;
+    const tiempoActual =
+        Date.now();
 
-    object-fit: contain;
 
-    display: block;
+    const segundos =
+        Math.floor(
+            (tiempoActual - tiempoInicio) / 1000
+        );
 
-    margin: 20px auto;
 
-    transform: translateX(5px);
+    const minutos =
+        Math.floor(
+            segundos / 60
+        );
+
+
+    const segundosRestantes =
+        segundos % 60;
+
+
+    const minutosTexto =
+        String(minutos)
+            .padStart(2, "0");
+
+
+    const segundosTexto =
+        String(segundosRestantes)
+            .padStart(2, "0");
+
+
+    document.getElementById(
+        "cronometro"
+    ).textContent =
+        `⏱️ ${minutosTexto}:${segundosTexto}`;
 }
+
+
+// =====================================================
+// DETENER CRONÓMETRO
+// =====================================================
+
+function detenerCronometro() {
+
+    if (!cronometroActivo) {
+        return;
+    }
+
+
+    clearInterval(
+        intervaloCronometro
+    );
+
+
+    tiempoFinal =
+        Date.now() -
+        tiempoInicio;
+
+
+    actualizarCronometro();
+}
+
+// =====================================================
+// TERMINAR JUEGO
+// =====================================================
+
+function terminarJuego() {
+    
+    detenerCronometro();
+
+    if (cronometroActivo) {
+
+    resultadoTiempo.textContent =
+        formatearTiempo(tiempoFinal);
+
+    }
+
+    pantallaJuego.style.display =
+        "none";
+
+    pantallaFinal.style.display =
+        "block";
+
+
+    // Calcular porcentaje
+    const porcentaje =
+        maximoPuntos > 0
+            ? (
+                puntos /
+                maximoPuntos
+            ) * 100
+            : 0;
+
+
+    // Obtener rango
+    const rango =
+        obtenerRango(
+            porcentaje
+        );
+
+
+    // Mostrar resultados
+    resultadoRango.textContent =
+        rango;
+
+    resultadoPorcentaje.textContent =
+        porcentaje.toFixed(1);
+
+    resultadoPuntos.textContent =
+        puntos;
+
+    resultadoMejorRacha.textContent =
+        mejorRacha;
+
+    resultadoCorrectas.textContent =
+        correctas;
+
+    resultadoIncorrectas.textContent =
+        incorrectas;
+
+    resultadoPasadas.textContent =
+        pasadas;
+
+    resultadoTotal.textContent =
+        preguntas.length;
+}
+
+
+// =====================================================
+// SALIR AL MENÚ
+// =====================================================
+
+function salirAlMenu() {
+
+    pantallaJuego.style.display =
+        "none";
+
+    pantallaFinal.style.display =
+        "none";
+
+    pantallaInicio.style.display =
+        "block";
+
+
+    respuesta.value = "";
+    resultado.textContent = "";
+
+
+    // Limpiar animación por si quedó activa
+    const mensaje =
+        document.getElementById(
+            "mensajeResultado"
+        );
+
+    if (mensaje) {
+
+        mensaje.style.opacity = "0";
+        mensaje.innerHTML = "";
+    }
+}
+
+
+// =====================================================
+// PASAR PREGUNTA
+// =====================================================
+
+function pasarPregunta() {
+
+    // Contar pasada
+    pasadas++;
+
+    marcadorPasadas.textContent =
+        pasadas;
+
+
+    // =================================================
+    // OBTENER RESPUESTA CORRECTA
+    // =================================================
+
+    let respuestaCorrecta;
+
+
+    if (
+        modoJuego === "capital"
+    ) {
+
+        respuestaCorrecta =
+            Array.isArray(
+                paisActual.capital
+            )
+                ? paisActual.capital.join(" o ")
+                : paisActual.capital;
+
+    }
+
+    else {
+
+        // País y Bandera
+        respuestaCorrecta =
+            paisActual.pais;
+    }
+
+
+    resultado.textContent =
+        `⏭️ Pregunta pasada. La respuesta era: ${respuestaCorrecta}`;
+
+
+    // Romper racha
+    racha = 0;
+
+    marcadorRacha.textContent =
+        racha;
+
+
+    // Desactivar
+    respuesta.disabled = true;
+
+    botonResponder.disabled =
+        true;
+
+    botonPasar.disabled =
+        true;
+
+
+    // Continuar
+    setTimeout(() => {
+
+        siguientePregunta();
+
+    }, 1500);
+}
+
+// =====================================================
+// FORMATEAR TIEMPO
+// =====================================================
+
+function formatearTiempo(milisegundos) {
+
+    const segundos =
+        Math.floor(milisegundos / 1000);
+
+    const minutos =
+        Math.floor(segundos / 60);
+
+    const segundosRestantes =
+        segundos % 60;
+
+    return (
+        String(minutos).padStart(2, "0") +
+        ":" +
+        String(segundosRestantes).padStart(2, "0")
+    );
+}
+
+// =====================================================
+// ABRIR CAPITAL QUIZ
+// =====================================================
+
+function abrirCapitalQuiz() {
+
+    modoPrincipal = "capital";
+    modoJuego = "capital";
+
+    menuPrincipal.style.display = "none";
+
+    pantallaInicio.style.display = "block";
+
+    selectorModo.style.display = "flex";
+}
+
+function abrirBanderaQuiz() {
+
+    modoPrincipal = "bandera";
+    modoJuego = "bandera";
+
+    menuPrincipal.style.display = "none";
+
+    pantallaInicio.style.display = "block";
+
+    selectorModo.style.display = "none";
+}
+
+// =====================================================
+// SELECCIONAR MODO
+// =====================================================
+
+function seleccionarModo(modo) {
+
+    modoJuego = modo;
+
+
+    // Quitar selección
+
+    modoCapital.classList.remove(
+        "modoSeleccionado"
+    );
+
+    modoPais.classList.remove(
+        "modoSeleccionado"
+    );
+
+
+    // Activar seleccionado
+
+    if (modo === "capital") {
+
+        modoCapital.classList.add(
+            "modoSeleccionado"
+        );
+
+    }
+
+    else {
+
+        modoPais.classList.add(
+            "modoSeleccionado"
+        );
+    }
+}
+
+// =====================================================
+// VOLVER AL MENÚ PRINCIPAL
+// =====================================================
+
+function volverAlMenuPrincipal() {
+
+    pantallaInicio.style.display = "none";
+    pantallaJuego.style.display = "none";
+    pantallaFinal.style.display = "none";
+
+    menuPrincipal.style.display = "block";
+
+    respuesta.value = "";
+    resultado.textContent = "";
+}
+
+function generarOpciones() {
+
+    const respuestas = [];
+
+    // =====================================================
+    // MODO: BANDERAS
+    // =====================================================
+
+    if (modoPrincipal === "bandera") {
+
+        const respuestaCorrecta =
+            paisActual.pais;
+
+        respuestas.push(
+            respuestaCorrecta
+        );
+
+
+        // Obtener países disponibles como opciones falsas
+        const candidatos =
+            paises.filter(pais =>
+                pais !== paisActual
+            );
+
+
+        // Mezclar candidatos
+        candidatos.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        // Agregar 3 países incorrectos
+        for (
+            let i = 0;
+            i < candidatos.length &&
+            respuestas.length < 4;
+            i++
+        ) {
+
+            const pais =
+                candidatos[i].pais;
+
+            if (
+                !respuestas.includes(pais)
+            ) {
+
+                respuestas.push(pais);
+            }
+        }
+
+
+        // Mezclar las 4 respuestas
+        respuestas.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        // Crear botones
+        opcionesRespuesta.innerHTML = "";
+
+        respuestas.forEach(opcion => {
+
+            const boton =
+                document.createElement("button");
+
+            boton.className =
+                "opcionRespuesta";
+
+            boton.textContent =
+                opcion;
+
+            boton.addEventListener(
+                "click",
+                () => seleccionarOpcion(
+                    opcion,
+                    boton,
+                    respuestaCorrecta
+                )
+            );
+
+            opcionesRespuesta.appendChild(
+                boton
+            );
+        });
+
+        return;
+    }
+
+
+    // =====================================================
+    // MODO: ADIVINA LA CAPITAL
+    // =====================================================
+
+    if (modoJuego === "capital") {
+
+        const respuestaCorrecta =
+            Array.isArray(paisActual.capital)
+                ? paisActual.capital[0]
+                : paisActual.capital;
+
+        respuestas.push(
+            respuestaCorrecta
+        );
+
+
+        const candidatos =
+            preguntas.filter(pais =>
+                pais !== paisActual
+            );
+
+
+        candidatos.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        for (
+            let i = 0;
+            i < candidatos.length &&
+            respuestas.length < 4;
+            i++
+        ) {
+
+            const capital =
+                Array.isArray(candidatos[i].capital)
+                    ? candidatos[i].capital[0]
+                    : candidatos[i].capital;
+
+            if (
+                !respuestas.includes(capital)
+            ) {
+
+                respuestas.push(capital);
+            }
+        }
+
+
+        respuestas.sort(
+            () => Math.random() - 0.5
+        );
+
+
+        opcionesRespuesta.innerHTML = "";
+
+        respuestas.forEach(opcion => {
+
+            const boton =
+                document.createElement("button");
+
+            boton.className =
+                "opcionRespuesta";
+
+            boton.textContent =
+                opcion;
+
+            boton.addEventListener(
+                "click",
+                () => seleccionarOpcion(
+                    opcion,
+                    boton,
+                    respuestaCorrecta
+                )
+            );
+
+            opcionesRespuesta.appendChild(
+                boton
+            );
+        });
+
+        return;
+    }
+
+
+    // =====================================================
+    // MODO: ADIVINA EL PAÍS POR SU CAPITAL
+    // =====================================================
+
+    const respuestaCorrecta =
+        paisActual.pais;
+
+    respuestas.push(
+        respuestaCorrecta
+    );
+
+
+    const candidatos =
+        preguntas.filter(pais =>
+            pais !== paisActual
+        );
+
+
+    candidatos.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    for (
+        let i = 0;
+        i < candidatos.length &&
+        respuestas.length < 4;
+        i++
+    ) {
+
+        const pais =
+            candidatos[i].pais;
+
+        if (
+            !respuestas.includes(pais)
+        ) {
+
+            respuestas.push(pais);
+        }
+    }
+
+
+    respuestas.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    opcionesRespuesta.innerHTML = "";
+
+    respuestas.forEach(opcion => {
+
+        const boton =
+            document.createElement("button");
+
+        boton.className =
+            "opcionRespuesta";
+
+        boton.textContent =
+            opcion;
+
+        boton.addEventListener(
+            "click",
+            () => seleccionarOpcion(
+                opcion,
+                boton,
+                respuestaCorrecta
+            )
+        );
+
+        opcionesRespuesta.appendChild(
+            boton
+        );
+    });
+}   
+
+function seleccionarOpcion(
+    opcionSeleccionada,
+    botonSeleccionado,
+    respuestaCorrecta
+) {
+
+    const botones =
+        document.querySelectorAll(
+            ".opcionRespuesta"
+        );
+
+
+    // Desactivar todos
+    botones.forEach(boton => {
+
+        boton.disabled = true;
+
+    });
+
+
+    // =================================================
+    // ¿ES CORRECTA?
+    // =================================================
+
+    if (
+        opcionSeleccionada ===
+        respuestaCorrecta
+    ) {
+
+        botonSeleccionado.classList.add(
+            "correcta"
+        );
+
+
+        // Reutilizar sistema existente
+        respuesta.value =
+            opcionSeleccionada;
+
+
+        comprobarRespuesta();
+
+    }
+
+    else {
+
+        // Marcar la opción seleccionada como incorrecta
+        botonSeleccionado.classList.add(
+            "incorrecta"
+        );
+
+
+        // Resaltar la respuesta correcta
+        botones.forEach(boton => {
+
+            if (
+                boton.textContent ===
+                respuestaCorrecta
+            ) {
+
+                boton.classList.add(
+                    "correcta"
+                );
+
+            }
+
+        });
+
+
+        // No revelar la respuesta en texto
+        resultado.textContent =
+            "✘ Incorrecto";
+
+
+        incorrectas++;
+
+        marcadorIncorrectas.textContent =
+            incorrectas;
+
+
+        // Romper racha
+        racha = 0;
+
+        marcadorRacha.textContent =
+            racha;
+
+
+        // Dar tiempo para ver la respuesta correcta
+        setTimeout(() => {
+
+            siguientePregunta();
+
+        }, 1500);
+    }
+}
+
+// =====================================================
+// BOTONES
+// =====================================================
+
+botonComenzar.addEventListener(
+    "click",
+    comenzarJuego
+);
+
+
+botonResponder.addEventListener(
+    "click",
+    comprobarRespuesta
+);
+
+
+botonJugarDeNuevo.addEventListener(
+    "click",
+    comenzarJuego
+);
+
+
+respuesta.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            comprobarRespuesta();
+        }
+    }
+);
+
+
+botonTerminar.addEventListener(
+    "click",
+    salirAlMenu
+);
+
+
+botonIrMenu.addEventListener(
+    "click",
+    salirAlMenu
+);
+
+
+botonPasar.addEventListener(
+    "click",
+    pasarPregunta
+);
+
+botonCapitales.addEventListener(
+    "click",
+    abrirCapitalQuiz
+);
+
+botonBanderas.addEventListener(
+    "click",
+    abrirBanderaQuiz
+);
+
+botonVolverMenu.addEventListener(
+    "click",
+    volverAlMenuPrincipal
+);
+
+modoCapital.addEventListener(
+    "click",
+    function() {
+
+        seleccionarModo("capital");
+
+    }
+);
+
+modoPais.addEventListener(
+    "click",
+    function() {
+
+        seleccionarModo("pais");
+
+    }
+);
+
+
