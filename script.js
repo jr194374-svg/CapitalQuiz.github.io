@@ -1478,6 +1478,7 @@ function formatearTiempo(milisegundos) {
 function abrirCapitalQuiz() {
 
     modoPrincipal = "capital";
+    modoJuego = "capital";
 
     menuPrincipal.style.display = "none";
 
