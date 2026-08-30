@@ -1,0 +1,528 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Capital Quiz</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =========================
+         FONDO ANIMADO
+    ========================== -->
+
+    <div class="fondo-animado">
+
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </div>
+
+
+    <!-- =========================
+         CONTENEDOR PRINCIPAL
+    ========================== -->
+
+    <main class="contenedor">
+
+        <!-- =========================
+                MENÚ PRINCIPAL
+            ========================== -->
+
+            <section id="menuPrincipal">
+
+                <h1>🌎 GeoQuiz </h1>
+
+                <p>
+                    Elige un modo de juego
+                </p>
+
+                <div class="modosJuego">
+
+                    <button
+                        id="botonCapitales"
+                        class="modoJuego"
+                    >
+                        🌎
+                        <strong>Capitales</strong>
+                        <span>Adivina la capital de cada país</span>
+                    </button>
+
+
+                    <button
+                        class="modoJuego modoBloqueado"
+                        disabled
+                    >
+                        🚩
+                        <strong>Próximamente</strong>
+                        <span>Nuevo modo de juego</span>
+                    </button>
+
+
+                    <button
+                        class="modoJuego modoBloqueado"
+                        disabled
+                    >
+                        🗺️
+                        <strong>Próximamente</strong>
+                        <span>Nuevo modo de juego</span>
+                    </button>
+
+                </div>
+
+            </section>
+
+
+        <!-- =========================
+             PANTALLA INICIAL
+        ========================== -->
+
+        <section id="pantallaInicio">
+
+            <!-- =========================
+                MODO DE JUEGO
+            ========================== -->
+
+            <div class="selectorModo">
+
+                <button
+                    id="modoCapital"
+                    class="modoSeleccionado"
+                >
+
+                    <span class="modoIcono">
+                        🏛️
+                    </span>
+
+                    <strong>
+                        Adivina la capital
+                    </strong>
+
+                    <span class="modoDescripcion">
+                        de cada país
+                    </span>
+
+                </button>
+
+
+                <button
+                    id="modoPais"
+                >
+
+                    <span class="modoIcono">
+                        🌎
+                    </span>
+
+                    <strong>
+                        Adivina el país
+                    </strong>
+
+                    <span class="modoDescripcion">
+                        por su capital
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <div class="configuracion">
+
+
+                <!-- CONTINENTE -->
+
+                <div class="opcion">
+
+                    <label for="selectorContinente">
+                        Continente
+                    </label>
+
+                    <select id="selectorContinente">
+
+                        <option value="Todos">
+                            🌎 Todos
+                        </option>
+
+                        <option value="África">
+                            🌍 África
+                        </option>
+
+                        <option value="América">
+                            🌎 América
+                        </option>
+
+                        <option value="Asia">
+                            🌏 Asia
+                        </option>
+
+                        <option value="Europa">
+                            🌍 Europa
+                        </option>
+
+                        <option value="Oceanía">
+                            🌏 Oceanía
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DIFICULTAD -->
+
+                <div class="opcion">
+
+                    <label for="selectorDificultad">
+                        Dificultad
+                    </label>
+
+                    <select id="selectorDificultad">
+
+                        <option value="Todas">
+                            🎯 Todas
+                        </option>
+
+                        <option value="Fácil">
+                            🟢 Fácil
+                        </option>
+
+                        <option value="Media">
+                            🟡 Media
+                        </option>
+
+                        <option value="Difícil">
+                            🔴 Difícil
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- NÚMERO DE PREGUNTAS -->
+
+                <div class="opcion">
+
+                    <label for="selectorPreguntas">
+                        Número de preguntas
+                    </label>
+
+                    <select id="selectorPreguntas">
+
+                        <option value="todos" selected>
+                            ∞ Todos
+                        </option>
+
+                        <option value="5">
+                            5
+                        </option>
+
+                        <option value="10">
+                            10
+                        </option>
+
+                        <option value="20">
+                            20
+                        </option>
+
+                        <option value="30">
+                            30
+                        </option>
+
+                        <option value="50">
+                            50
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- CRONÓMETRO -->
+
+                <div class="opcion">
+
+                    <label for="interruptorCronometro">
+                        ⏱️ Cronómetro
+                    </label>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="interruptorCronometro"
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <button id="botonComenzar">
+                Comenzar juego
+            </button>
+
+            <button id="botonVolverMenu">
+                Volver al menú
+            </button>
+
+        </section>
+
+
+        <!-- =========================
+             PANTALLA DEL JUEGO
+        ========================== -->
+
+        <section id="pantallaJuego">
+
+
+            <!-- MARCADOR -->
+
+            <div class="marcadorPuntos">
+
+                🏆
+                <span id="puntos">0</span>
+
+            </div>
+
+            <div
+                id="cronometro"
+                class="cronometro"
+            >
+                ⏱️ 00:00
+            </div>
+
+            <!-- INFORMACIÓN DE LA PREGUNTA -->
+
+            <p id="numeroPregunta"></p>
+
+            <h2 id="pregunta"></h2>
+
+
+            <!-- RESPUESTA -->
+
+            <input
+                type="text"
+                id="respuesta"
+                placeholder="Escribe la capital..."
+                autocomplete="off"
+            >
+
+
+            <div class="botonesJuego">
+
+                <button id="botonResponder">
+                    Responder
+                </button>
+
+                <button id="botonPasar">
+                    Pasar pregunta
+                </button>
+
+            </div>
+
+
+            <!-- RESULTADO NORMAL -->
+
+            <p id="resultado"></p>
+
+
+            <!-- ESTADÍSTICAS DURANTE EL JUEGO -->
+
+            <div class="puntuacion">
+
+                ✔ Correctas:
+                <span id="correctas">0</span>
+
+                <br>
+
+                ✘ Incorrectas:
+                <span id="incorrectas">0</span>
+
+                <br>
+
+                ⏭️ Pasadas:
+                <span id="pasadas">0</span>
+
+                <br>
+
+                🔥 Racha:
+                <span id="racha">0</span>
+
+            </div>
+
+
+            <!-- =========================
+                 ANIMACIÓN DE PUNTOS
+            ========================== -->
+
+            <div id="mensajeResultado"></div>
+
+
+            <!-- TERMINAR -->
+
+            <button id="botonTerminar">
+                Terminar juego
+            </button>
+
+        </section>
+
+
+        <!-- =========================
+             PANTALLA FINAL
+        ========================== -->
+
+        <section id="pantallaFinal">
+
+
+            <h2>
+                🎉 ¡Terminaste!
+            </h2>
+
+
+            <div class="estadisticas">
+
+
+                <!-- RANGO -->
+
+                <div class="rangoFinal">
+
+                    <h3 id="resultadoRango">
+                        🗺️ Turista perdido
+                    </h3>
+
+                    <p>
+
+                        📊 Puntuación:
+                        <span id="resultadoPorcentaje">
+                            0
+                        </span>%
+
+                    <p id="tiempoFinalTexto">
+                        ⏱️ Tiempo:
+                        <span id="resultadoTiempo">
+                            00:00
+                        </span>
+                    </p>
+
+                </div>
+
+
+                <!-- RESULTADOS -->
+
+                <p>
+
+                    🏆 Puntos:
+                    <span id="resultadoPuntos">
+                        0
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    🔥 Mejor racha:
+                    <span id="resultadoMejorRacha">
+                        0
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    ✔ Correctas:
+                    <span id="resultadoCorrectas">
+                        0
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    ✘ Incorrectas:
+                    <span id="resultadoIncorrectas">
+                        0
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    ⏭️ Pasadas:
+                    <span id="resultadoPasadas">
+                        0
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    📋 Total de preguntas:
+                    <span id="resultadoTotal">
+                        0
+                    </span>
+
+                </p>
+
+            </div>
+
+
+            <!-- BOTONES FINALES -->
+
+            <button id="botonJugarDeNuevo">
+                Jugar de nuevo
+            </button>
+
+            <button id="botonIrMenu">
+                Ir al menú
+            </button>
+
+        </section>
+        <footer class="creditos">
+            Hecho por Jason Rojas · 2026
+        </footer>
+
+    </main>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="paises.js"></script>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
