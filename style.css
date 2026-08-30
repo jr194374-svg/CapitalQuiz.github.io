@@ -27,7 +27,8 @@ body {
 ===================================================== */
 
 .contenedor {
-    position: relative;
+   position: relative;
+   z-index: 2;
 
     max-width: 600px;
     margin: 60px auto;
@@ -266,7 +267,8 @@ select {
 ===================================================== */
 
 .fondo-animado {
-    position: fixed;
+   position: fixed;
+   z-index: 0;
 
     inset: 0;
 
@@ -1134,15 +1136,24 @@ body::after {
 }
 
 /* =====================================================
-   CAPA DE INTERFAZ
+   CAPA DE INTERACCIÓN DEL MENÚ DE MODOS
 ===================================================== */
 
-.contenedor {
+.selectorModo {
+    position: relative;
     z-index: 10;
 }
 
-body::before,
-body::after {
-    pointer-events: none;
+.modo {
+    position: relative;
+    z-index: 11;
+    cursor: pointer;
+}
+
+.modo button,
+.modo input,
+.modo select {
+    position: relative;
+    z-index: 12;
 }
 
