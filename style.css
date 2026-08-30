@@ -548,7 +548,6 @@ body::after {
         forwards;
 }
 
-
 /* =====================================================
    DETALLE DE PUNTOS
 ===================================================== */
@@ -1251,4 +1250,23 @@ body::after {
 .opcionRespuesta.incorrecta {
     background: rgba(239, 68, 68, 0.35);
     border-color: #ef4444;
+}
+
+
+/* =====================================================
+   BANDERA DE LA PREGUNTA
+===================================================== */
+
+.banderaPregunta {
+
+    width: 180px;
+    height: 120px;
+
+    object-fit: contain;
+
+    display: block;
+
+    margin: 20px auto;
+
+    transform: translateX(5px);
 }
