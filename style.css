@@ -529,8 +529,9 @@ body::after {
 
 .correctoTitulo {
     font-size: 28px;
-
     font-weight: bold;
+
+    -webkit-text-stroke: 2px black;
 
     opacity: 1;
 
