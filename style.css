@@ -1133,3 +1133,16 @@ body::after {
         rgba(255, 255, 255, 0.06);
 }
 
+/* =====================================================
+   CAPA DE INTERFAZ
+===================================================== */
+
+.contenedor {
+    z-index: 10;
+}
+
+body::before,
+body::after {
+    pointer-events: none;
+}
+
