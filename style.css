@@ -28,7 +28,7 @@ body {
 
 .contenedor {
    position: relative;
-   z-index: 2;
+   z-index: 1;
 
     max-width: 600px;
     margin: 60px auto;
@@ -1135,30 +1135,49 @@ body::after {
         rgba(255, 255, 255, 0.06);
 }
 
-/* =====================================================
-   CAPA DE INTERACCIÓN DEL MENÚ DE MODOS
-===================================================== */
+@media (max-width: 700px) and (orientation: landscape) {
 
-.selectorModo {
-    position: relative;
-    z-index: 10;
+    body {
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    .contenedor {
+        max-width: 90%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 30px;
+        margin: 10px 0;
+    }
+
+    .configuracion {
+        margin: 15px auto;
+        max-width: 320px;
+    }
+
+    .opcion {
+        margin: 8px 0;
+    }
+
+    .opcion label {
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    select {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 15px;
+        margin: 6px;
+    }
 }
 
-.modo {
-    position: relative;
-    z-index: 11;
-    cursor: pointer;
-}
 
-.modo button,
-.modo input,
-.modo select {
-    position: relative;
-    z-index: 12;
-}
-
-body::before,
-body::after {
-    pointer-events: none;
-}
 
