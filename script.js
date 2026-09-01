@@ -1969,9 +1969,15 @@ botonCapitales.addEventListener(
     "click",
     function() {
 
-        abrirCapitalQuiz();
+        musicaFondo.play()
+            .then(() => {
+                console.log("Música reproducida");
+            })
+            .catch(error => {
+                console.log("Error de audio:", error);
+            });
 
-        musicaFondo.play();
+        abrirCapitalQuiz();
 
     }
 );
