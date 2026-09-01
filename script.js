@@ -29,7 +29,7 @@ let modoPrincipal = "capital";
 
 // SONIDOS //
 
-const sonidoCorrecto = new Audio("sounds/correcto.mp3");
+const sonidoCorrecto = new Audio("./sounds/correcto.mp3");
 
 // =====================================================
 // ELEMENTOS DE LA PÁGINA
@@ -1049,7 +1049,9 @@ function comprobarRespuesta() {
     if (esCorrecta) {
 
         sonidoCorrecto.currentTime = 0;
-        sonidoCorrecto.play();
+        sonidoCorrecto.play().catch(error => {
+            console.log("No se pudo reproducir el sonido:", error);
+});
 
         correctas++;
 
