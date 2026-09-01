@@ -1967,19 +1967,7 @@ botonPasar.addEventListener(
 
 botonCapitales.addEventListener(
     "click",
-    function() {
-
-        musicaFondo.play()
-            .then(() => {
-                console.log("Música reproducida");
-            })
-            .catch(error => {
-                console.log("Error de audio:", error);
-            });
-
-        abrirCapitalQuiz();
-
-    }
+    abrirCapitalQuiz
 );
 
 botonBanderas.addEventListener(
