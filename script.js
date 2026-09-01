@@ -31,11 +31,6 @@ let modoPrincipal = "capital";
 
 const sonidoCorrecto = new Audio("sounds/correcto.mp3");
 
-const musicaFondo = new Audio("./sounds/musica.mp3");
-
-musicaFondo.loop = true;
-musicaFondo.volume = 0.3;
-
 // =====================================================
 // ELEMENTOS DE LA PÁGINA
 // =====================================================
