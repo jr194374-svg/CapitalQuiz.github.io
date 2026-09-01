@@ -29,7 +29,12 @@ let modoPrincipal = "capital";
 
 // SONIDOS //
 
-const sonidoCorrecto = new Audio("./sounds/correcto.mp3");
+const sonidoCorrecto = new Audio("sounds/correcto.mp3");
+
+const musicaFondo = new Audio("./sounds/musica.mp3");
+
+musicaFondo.loop = true;
+musicaFondo.volume = 0.3;
 
 // =====================================================
 // ELEMENTOS DE LA PÁGINA
@@ -1049,9 +1054,7 @@ function comprobarRespuesta() {
     if (esCorrecta) {
 
         sonidoCorrecto.currentTime = 0;
-        sonidoCorrecto.play().catch(error => {
-            console.log("No se pudo reproducir el sonido:", error);
-});
+        sonidoCorrecto.play();
 
         correctas++;
 
@@ -1964,7 +1967,13 @@ botonPasar.addEventListener(
 
 botonCapitales.addEventListener(
     "click",
-    abrirCapitalQuiz
+    function() {
+
+        abrirCapitalQuiz();
+
+        musicaFondo.play();
+
+    }
 );
 
 botonBanderas.addEventListener(
