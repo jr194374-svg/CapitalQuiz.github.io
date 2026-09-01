@@ -27,6 +27,10 @@ let idAnimacionPuntos = 0;
 let modoJuego = "capital";
 let modoPrincipal = "capital";
 
+// SONIDOS //
+
+const sonidoCorrecto = new Audio("sounds/correcto.mp3");
+
 // =====================================================
 // ELEMENTOS DE LA PÁGINA
 // =====================================================
@@ -150,6 +154,9 @@ const selectorModo =
 
 const opcionesRespuesta =
     document.getElementById("opcionesRespuesta");
+
+
+sonidoCorrecto.volume = 0.5;
 
 // =====================================================
 // FUNCIONES
@@ -1041,6 +1048,9 @@ function comprobarRespuesta() {
 
     if (esCorrecta) {
 
+        sonidoCorrecto.currentTime = 0;
+        sonidoCorrecto.play();
+
         correctas++;
 
         marcadorCorrectas.textContent =
@@ -1284,6 +1294,7 @@ function detenerCronometro() {
 // =====================================================
 
 function terminarJuego() {
+    
     
     detenerCronometro();
 
@@ -1981,5 +1992,4 @@ modoPais.addEventListener(
 
     }
 );
-
 
